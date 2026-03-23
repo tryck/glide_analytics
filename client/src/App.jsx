@@ -8,7 +8,9 @@ import {
   ExternalLink, Pencil, Briefcase, Boxes, MoreVertical, MapPin
 } from 'lucide-react';
 
-const API_BASE = '/api';
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+  ? 'http://localhost:3001/api' 
+  : '/api';
 
 function Login({ onLogin }) {
   const [username, setUsername] = useState('');
@@ -208,6 +210,7 @@ function App() {
 
   const fetchData = async () => {
     try {
+      console.log("[Target] Site Data Source:", API_BASE);
       const [b, c, p] = await Promise.all([
         axios.get(`${API_BASE}/analysis`),
         axios.get(`${API_BASE}/clients`),
@@ -432,9 +435,9 @@ function App() {
                    <thead className="bg-white/[0.02] text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-white/5">
                       <tr>
                          <th className="px-8 py-5 w-10"><input type="checkbox" className="opacity-30" /></th>
-                         <th className="px-6 py-5">Site Instance</th>
-                         <th className="px-6 py-5">Connection Hash</th>
-                         <th className="px-6 py-5">Bridge Status</th>
+                          <th className="px-6 py-5">Site Instance</th>
+                         <th className="px-6 py-5">Database/ID</th>
+                         <th className="px-6 py-5">Connection Status</th>
                          <th className="px-8 py-5 w-20"></th>
                       </tr>
                    </thead>
@@ -467,7 +470,7 @@ function App() {
                                   : 'bg-rose-500/10 border-rose-500/20 text-rose-500'
                                }`}>
                                   <div className={`w-1.5 h-1.5 rounded-full ${b.status === 'Online' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)] animate-pulse'}`} />
-                                  {b.status === 'Online' ? 'Healthy' : 'Interrupted'}
+                                  {b.status === 'Online' ? 'Active' : 'Offline'}
                                </div>
                             </td>
                             <td className="px-8 py-6 text-right">
