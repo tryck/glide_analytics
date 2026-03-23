@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+
+:root {
+  --transition-speed: 0.4s;
+  /* Default to Dark Theme variables */
+  --color-bg-main: #0c0c0e;
+  --color-bg-sidebar: #111114;
+  --color-bg-header: rgba(12, 12, 14, 0.8);
+  --color-bg-card: rgba(24, 24, 27, 0.4);
+  --color-border: rgba(255, 255, 255, 0.05);
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a1a1aa;
+  --color-sidebar-text: #94a3b8;
+  --color-sidebar-hover: rgba(255, 255, 255, 0.03);
+  --color-sidebar-active: rgba(255, 255, 255, 0.05);
+}
+
+.light-theme {
+  --color-bg-main: #f4f7fe;
+  --color-bg-sidebar: #ffffff;
+  --color-bg-header: rgba(255, 255, 255, 0.8);
+  --color-bg-card: #ffffff;
+  --color-border: rgba(0, 0, 0, 0.05);
+  --color-text-primary: #1e293b;
+  --color-text-secondary: #64748b;
+  --color-sidebar-text: #64748b;
+  --color-sidebar-hover: rgba(99, 102, 241, 0.03);
+  --color-sidebar-active: rgba(99, 102, 241, 0.06);
+}
+
+.dark-theme {
+  /* Explicitly re-declare if needed, though :root handles it */
+  --color-bg-main: #0c0c0e;
+  --color-bg-sidebar: #111114;
+  --color-text-primary: #ffffff;
+}
+
+@theme {
+  --color-bg-main: var(--color-bg-main);
+  --color-bg-sidebar: var(--color-bg-sidebar);
+  --color-bg-card: var(--color-bg-card);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-bg-main);
+  color: var(--color-text-primary);
+  font-family: 'Lexend', sans-serif;
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+@layer components {
+  .sidebar-item {
+    color: var(--color-sidebar-text);
+    @apply flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all cursor-pointer text-sm font-medium;
+  }
+  
+  .sidebar-item:hover {
+    background-color: var(--color-sidebar-hover);
+    @apply text-indigo-500;
+  }
+
+  .sidebar-item.active {
+    background-color: var(--color-sidebar-active);
+    @apply text-indigo-600;
+  }
+
+  .nav-group-title {
+    @apply px-4 py-4 text-[11px] font-bold uppercase tracking-widest opacity-50;
+  }
+
+  .card-surface {
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    @apply rounded-[1.5rem] p-8 transition-all;
+  }
+
+  .btn-action {
+    @apply p-2 rounded-lg text-slate-400 hover:text-indigo-500 transition-all hover:bg-indigo-500/5;
+  }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 20px;
+}
+
+.animate-in-fade {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
