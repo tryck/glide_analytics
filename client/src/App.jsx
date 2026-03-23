@@ -214,8 +214,8 @@ function App() {
         axios.get(`${API_BASE}/products`)
       ]);
       setBridges(Array.isArray(b.data) ? b.data : []);
-      setClients(c.data);
-      setProducts(p.data);
+      setClients(Array.isArray(c.data) ? c.data : []);
+      setProducts(Array.isArray(p.data) ? p.data : []);
     } catch (e) { console.error(e); }
     setLoading(false);
   };
