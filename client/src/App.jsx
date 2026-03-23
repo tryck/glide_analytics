@@ -5,7 +5,7 @@ import {
   MessageSquare, Plus, RefreshCw, X, Trash2, Settings,
   LayoutDashboard, LogOut, Sun, Moon, Database, Key,
   ChevronRight, ChevronDown, Calendar, User, Eye, AlertCircle,
-  ExternalLink, Pencil, Briefcase, Boxes, MoreVertical
+  ExternalLink, Pencil, Briefcase, Boxes, MoreVertical, MapPin
 } from 'lucide-react';
 
 const API_BASE = '/api';
@@ -56,7 +56,7 @@ function Login({ onLogin }) {
 function Sidebar({ activeView, setView, onLogout, setSelectedProduct, setSelectedBridge, setSelectedTableIdx }) {
   const menu = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'handshakes', label: 'Relays', icon: Activity },
+    { id: 'handshakes', label: 'Sites', icon: MapPin },
     { id: 'products', label: 'Software Products', icon: Boxes },
     { id: 'clients', label: 'Clients', icon: Briefcase },
   ];
@@ -86,8 +86,8 @@ function Dashboard({ bridges }) {
   const bridgesList = Array.isArray(bridges) ? bridges : [];
   const stats = [
     { label: 'Network Reach', value: bridgesList.reduce((a, b) => a + (b.stats?.customers || 0), 0), icon: Globe, color: 'text-indigo-500' },
-    { label: 'Active Relays', value: bridgesList.filter(b => b.status === 'Online').length, icon: Activity, color: 'text-emerald-500' },
-    { label: 'Node Interruptions', value: bridgesList.filter(b => b.status === 'Offline').length, icon: AlertCircle, color: 'text-rose-500' },
+    { label: 'Active Sites', value: bridgesList.filter(b => b.status === 'Online').length, icon: Activity, color: 'text-emerald-500' },
+    { label: 'Site Interruptions', value: bridgesList.filter(b => b.status === 'Offline').length, icon: AlertCircle, color: 'text-rose-500' },
   ];
   return (
     <div className="p-10 space-y-8 animate-in-fade">
@@ -310,7 +310,7 @@ function App() {
                 <div className="space-y-8 animate-in-fade h-full flex flex-col">
                    <div className="flex justify-between items-start">
                       <div className="space-y-1">
-                         <h3 className="text-2xl font-black tracking-tighter">Live Relay: {bridgeProduct.field_mapping.tables[selectedTableIdx].name}</h3>
+                         <h3 className="text-2xl font-black tracking-tighter">Site View: {bridgeProduct.field_mapping.tables[selectedTableIdx].name}</h3>
                          <p className="text-[10px] text-slate-500 uppercase tracking-widest">{selectedBridge.name} / Interrogating Last 20 Records</p>
                       </div>
                       <button onClick={() => {
@@ -398,13 +398,13 @@ function App() {
         {view === 'handshakes' && !selectedBridge && (
           <div className="p-8 space-y-8 animate-in-fade">
              <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-black tracking-tight">Relays</h1>
+                <h1 className="text-2xl font-black tracking-tight">Active Sites</h1>
                 <div className="flex gap-2">
-                   <button className="px-5 py-2.5 bg-white/[0.03] border border-white/10 rounded-xl text-[11px] font-bold text-slate-400 hover:bg-white/5 transition-all">Relay Status</button>
+                   <button className="px-5 py-2.5 bg-white/[0.03] border border-white/10 rounded-xl text-[11px] font-bold text-slate-400 hover:bg-white/5 transition-all">Connection Status</button>
                    <button onClick={() => {
                         setBridgeForm({ id: '', client_id: '', product_id: '', db_name: '', connection_string_name: '' });
                         setShowBridgeModal(true);
-                   }} className="px-5 py-2.5 bg-indigo-600 rounded-xl text-[11px] font-black uppercase tracking-widest hover:bg-indigo-500 transition-all">Establish New Relay</button>
+                   }} className="px-5 py-2.5 bg-indigo-600 rounded-xl text-[11px] font-black uppercase tracking-widest hover:bg-indigo-500 transition-all">Add New Site</button>
                 </div>
              </div>
 
@@ -429,7 +429,7 @@ function App() {
                    <thead className="bg-white/[0.02] text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-white/5">
                       <tr>
                          <th className="px-8 py-5 w-10"><input type="checkbox" className="opacity-30" /></th>
-                         <th className="px-6 py-5">Relay Name</th>
+                         <th className="px-6 py-5">Site Instance</th>
                          <th className="px-6 py-5">Connection Hash</th>
                          <th className="px-6 py-5">Bridge Status</th>
                          <th className="px-8 py-5 w-20"></th>
@@ -487,7 +487,7 @@ function App() {
                          </tr>
                       ))}
                       {bridges.length === 0 && (
-                         <tr><td colSpan="5" className="py-20 text-center text-slate-700 italic text-xs">No active relays established yet.</td></tr>
+                         <tr><td colSpan="5" className="py-20 text-center text-slate-700 italic text-xs">No active sites connected yet.</td></tr>
                       )}
                    </tbody>
                 </table>
@@ -509,7 +509,7 @@ function App() {
                 {logLoading ? (
                   <div className="h-full flex flex-col items-center justify-center space-y-4 opacity-50">
                     <RefreshCw className="animate-spin text-indigo-500" size={32} />
-                    <div className="text-[10px] font-black uppercase tracking-[0.2em]">Interrogating Remote Relay...</div>
+                     <div className="text-[10px] font-black uppercase tracking-[0.2em]">Connecting to Site...</div>
                   </div>
                 ) : (
                   <table className="w-full text-left border-collapse">
@@ -826,7 +826,7 @@ function App() {
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 backdrop-blur-xl bg-black/40">
             <div className="card-surface w-full max-w-2xl p-10 relative space-y-8">
               <div className="flex justify-between items-start">
-                <div><h2 className="text-2xl font-black tracking-tighter">{bridgeForm.id ? 'Refine Handshake' : 'New Systems Handshake'}</h2><p className="text-[10px] text-slate-500 uppercase tracking-widest mt-1">Establishing Direct Remote Core Relay</p></div>
+                <div><h2 className="text-2xl font-black tracking-tighter">{bridgeForm.id ? 'Refine Site Link' : 'New Site Connection'}</h2><p className="text-[10px] text-slate-500 uppercase tracking-widest mt-1">Linking Remote System Instance</p></div>
                 <button onClick={() => setShowBridgeModal(false)} className="p-2 hover:bg-white/5 rounded-xl"><X size={20} /></button>
               </div>
               <form onSubmit={handleSaveBridge} className="space-y-6">
