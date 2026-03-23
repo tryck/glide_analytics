@@ -83,10 +83,11 @@ function Sidebar({ activeView, setView, onLogout, setSelectedProduct, setSelecte
 }
 
 function Dashboard({ bridges }) {
+  const bridgesList = Array.isArray(bridges) ? bridges : [];
   const stats = [
-    { label: 'Network Reach', value: bridges.reduce((a, b) => a + (b.stats?.customers || 0), 0), icon: Globe, color: 'text-indigo-500' },
-    { label: 'Active Relays', value: bridges.filter(b => b.status === 'Online').length, icon: Activity, color: 'text-emerald-500' },
-    { label: 'Node Interruptions', value: bridges.filter(b => b.status === 'Offline').length, icon: AlertCircle, color: 'text-rose-500' },
+    { label: 'Network Reach', value: bridgesList.reduce((a, b) => a + (b.stats?.customers || 0), 0), icon: Globe, color: 'text-indigo-500' },
+    { label: 'Active Relays', value: bridgesList.filter(b => b.status === 'Online').length, icon: Activity, color: 'text-emerald-500' },
+    { label: 'Node Interruptions', value: bridgesList.filter(b => b.status === 'Offline').length, icon: AlertCircle, color: 'text-rose-500' },
   ];
   return (
     <div className="p-10 space-y-8 animate-in-fade">
@@ -104,7 +105,7 @@ function Dashboard({ bridges }) {
       <div className="card-surface p-8">
         <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-6">Product Deployment Status</h3>
         <div className="space-y-4">
-          {bridges.map(b => (
+          {bridgesList.map(b => (
             <div key={b.id} className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-2xl hover:bg-white/[0.04] transition-colors">
               <div className="flex items-center gap-4">
                 <div className={`w-2 h-2 rounded-full ${b.status === 'Online' ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' : 'bg-rose-500 pulse'}`} />
@@ -212,7 +213,7 @@ function App() {
         axios.get(`${API_BASE}/clients`),
         axios.get(`${API_BASE}/products`)
       ]);
-      setBridges(b.data);
+      setBridges(Array.isArray(b.data) ? b.data : []);
       setClients(c.data);
       setProducts(p.data);
     } catch (e) { console.error(e); }
