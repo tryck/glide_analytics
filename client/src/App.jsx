@@ -56,7 +56,7 @@ function Login({ onLogin }) {
 function Sidebar({ activeView, setView, onLogout, setSelectedProduct, setSelectedBridge, setSelectedTableIdx }) {
   const menu = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'handshakes', label: 'Systems Bridge', icon: Activity },
+    { id: 'handshakes', label: 'Relays', icon: Activity },
     { id: 'products', label: 'Software Products', icon: Boxes },
     { id: 'clients', label: 'Clients', icon: Briefcase },
   ];
@@ -397,7 +397,7 @@ function App() {
         {view === 'handshakes' && !selectedBridge && (
           <div className="p-8 space-y-8 animate-in-fade">
              <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-black tracking-tight">System Bridges</h1>
+                <h1 className="text-2xl font-black tracking-tight">Relays</h1>
                 <div className="flex gap-2">
                    <button className="px-5 py-2.5 bg-white/[0.03] border border-white/10 rounded-xl text-[11px] font-bold text-slate-400 hover:bg-white/5 transition-all">Relay Status</button>
                    <button onClick={() => {
@@ -428,7 +428,7 @@ function App() {
                    <thead className="bg-white/[0.02] text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-white/5">
                       <tr>
                          <th className="px-8 py-5 w-10"><input type="checkbox" className="opacity-30" /></th>
-                         <th className="px-6 py-5">System Bridge</th>
+                         <th className="px-6 py-5">Relay Name</th>
                          <th className="px-6 py-5">Connection Hash</th>
                          <th className="px-6 py-5">Bridge Status</th>
                          <th className="px-8 py-5 w-20"></th>
@@ -486,7 +486,7 @@ function App() {
                          </tr>
                       ))}
                       {bridges.length === 0 && (
-                         <tr><td colSpan="5" className="py-20 text-center text-slate-700 italic text-xs">No system bridges established yet.</td></tr>
+                         <tr><td colSpan="5" className="py-20 text-center text-slate-700 italic text-xs">No active relays established yet.</td></tr>
                       )}
                    </tbody>
                 </table>
