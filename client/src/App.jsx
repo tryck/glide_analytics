@@ -193,7 +193,7 @@ function App() {
     try {
        await axios.put(`${API_BASE}/products/${updatedProd.id}`, updatedProd);
        const res = await axios.get(`${API_BASE}/products`);
-       setProducts(res.data);
+        setProducts(Array.isArray(res.data) ? res.data : []);
        const fresh = res.data.find(p => p.id === updatedProd.id);
        if (selectedProduct && selectedProduct.id === fresh.id) setSelectedProduct(fresh);
        if (selectedBridge) {
@@ -213,6 +213,9 @@ function App() {
         axios.get(`${API_BASE}/clients`),
         axios.get(`${API_BASE}/products`)
       ]);
+      console.log("Analysis Data:", b.data);
+      console.log("Clients Data:", c.data);
+      console.log("Products Data:", p.data);
       setBridges(Array.isArray(b.data) ? b.data : []);
       setClients(Array.isArray(c.data) ? c.data : []);
       setProducts(Array.isArray(p.data) ? p.data : []);
