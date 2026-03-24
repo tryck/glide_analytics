@@ -306,8 +306,10 @@ app.post('/api/sites/:id/toggle-lock', async (req, res) => {
         if (!lock) return res.status(400).json({ error: 'Product does not support remote locking' });
 
         let connConfig = process.env[bridge.connection_string_name] || process.env.RDS_MAIN;
+        if (!connConfig) return res.status(500).json({ error: 'Connection string not found (e.g. RDS_MAIN)' });
+
         if (bridge.connection_string_name === 'RDS_MAIN' && bridge.db_name) {
-            connConfig = connConfig.endsWith('/') ? connConfig + bridge.db_name : connConfig + '/' + bridge.db_name;
+            connConfig = connConfig.toString().endsWith('/') ? connConfig + bridge.db_name : connConfig + '/' + bridge.db_name;
         }
         const conn = await mysql.createConnection(connConfig);
         
