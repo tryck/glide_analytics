@@ -94,11 +94,11 @@ app.get('/api/client-products', async (req, res) => {
 });
 
 app.post('/api/client-products', async (req, res) => {
-    const { client_id, product_id, db_name, connection_string_name } = req.body;
+    const { client_id, product_id, db_name, connection_string_name, tags } = req.body;
     try {
         const [reslt] = await pool.execute(
-            'INSERT INTO client_product (client_id, product_id, db_name, connection_string_name) VALUES (?, ?, ?, ?)',
-            [client_id || null, product_id || null, db_name || null, connection_string_name || null]
+            'INSERT INTO client_product (client_id, product_id, db_name, connection_string_name, tags) VALUES (?, ?, ?, ?, ?)',
+            [client_id || null, product_id || null, db_name || null, connection_string_name || null, tags || null]
         );
         res.json({ id: reslt.insertId, ...req.body });
     } catch (e) { res.status(500).json({ error: e.message }); }
@@ -112,7 +112,7 @@ app.delete('/api/client-products/:id', async (req, res) => {
 });
 
 app.put('/api/client-products/:id', async (req, res) => {
-    const { client_id, product_id, db_name, connection_string_name } = req.body;
+    const { client_id, product_id, db_name, connection_string_name, tags } = req.body;
     try {
         console.log("Updating Bridge ID:", req.params.id, "Body:", req.body);
         const values = [
@@ -120,11 +120,12 @@ app.put('/api/client-products/:id', async (req, res) => {
             product_id || null, 
             db_name || null, 
             connection_string_name || null, 
+            tags || null,
             req.params.id || null
         ];
         
         await pool.execute(
-            'UPDATE client_product SET client_id = ?, product_id = ?, db_name = ?, connection_string_name = ? WHERE id = ?',
+            'UPDATE client_product SET client_id = ?, product_id = ?, db_name = ?, connection_string_name = ?, tags = ? WHERE id = ?',
             values
         );
         res.json({ success: true });
@@ -155,6 +156,9 @@ app.get('/api/client-products/:id/logs', async (req, res) => {
         let connConfig;
         if (bridge.connection_string_name && process.env[bridge.connection_string_name]) {
             connConfig = process.env[bridge.connection_string_name];
+            if (bridge.connection_string_name === 'RDS_MAIN' && bridge.db_name) {
+                connConfig = connConfig.endsWith('/') ? connConfig + bridge.db_name : connConfig + '/' + bridge.db_name;
+            }
         } else {
             connConfig = {
                 host: process.env.DB_HOST,
@@ -181,6 +185,9 @@ app.get('/api/client-products/:id/tables/:tableName', async (req, res) => {
         let connConfig;
         if (bridge.connection_string_name && process.env[bridge.connection_string_name]) {
             connConfig = process.env[bridge.connection_string_name];
+            if (bridge.connection_string_name === 'RDS_MAIN' && bridge.db_name) {
+                connConfig = connConfig.endsWith('/') ? connConfig + bridge.db_name : connConfig + '/' + bridge.db_name;
+            }
         } else {
             connConfig = { host: process.env.DB_HOST, user: process.env.DB_USER, password: process.env.DB_PASSWORD, database: bridge.db_name };
         }
@@ -211,6 +218,9 @@ app.get('/api/analysis', async (req, res) => {
                 let connConfig;
                 if (bridge.connection_string_name && process.env[bridge.connection_string_name]) {
                     connConfig = process.env[bridge.connection_string_name];
+                    if (bridge.connection_string_name === 'RDS_MAIN' && bridge.db_name) {
+                        connConfig = connConfig.endsWith('/') ? connConfig + bridge.db_name : connConfig + '/' + bridge.db_name;
+                    }
                 } else {
                     connConfig = {
                         host: process.env.DB_HOST,
@@ -243,8 +253,11 @@ app.get('/api/analysis', async (req, res) => {
                 
                 let lic = 'Active';
                 try {
-                    const [opt] = await conn.execute(`SELECT value FROM ${TBL_SETTINGS} WHERE name="system_locked" LIMIT 1`);
-                    if (opt[0]?.value == 1) lic = 'Locked';
+                    const lock = mapping.lock_config;
+                    if (lock) {
+                        const [opt] = await conn.execute(`SELECT ${lock.field} as val FROM ${lock.table} WHERE ${lock.name_col} = ? LIMIT 1`, [lock.name_val]);
+                        if (opt[0]?.val == 1) lic = 'Locked';
+                    }
                 } catch(e){}
 
                 await conn.end();
@@ -275,6 +288,37 @@ app.post('/api/login', (req, res) => {
     if (req.body.username === process.env.ADMIN_USER && req.body.password === process.env.ADMIN_PASS) {
         res.json({ success: true, token: 'session-master' });
     } else { res.status(401).json({ success: false }); }
+});
+
+app.post('/api/sites/:id/toggle-lock', async (req, res) => {
+    try {
+        const [rows] = await pool.execute(`
+            SELECT cp.*, p.field_mapping 
+            FROM client_product cp 
+            JOIN products p ON cp.product_id = p.id 
+            WHERE cp.id = ?`, [req.params.id]
+        );
+        const bridge = rows[0];
+        if (!bridge) return res.status(404).json({ error: 'Site not found' });
+        
+        const mapping = typeof bridge.field_mapping === 'string' ? JSON.parse(bridge.field_mapping) : bridge.field_mapping;
+        const lock = mapping?.lock_config;
+        if (!lock) return res.status(400).json({ error: 'Product does not support remote locking' });
+
+        let connConfig = process.env[bridge.connection_string_name] || process.env.RDS_MAIN;
+        if (bridge.connection_string_name === 'RDS_MAIN' && bridge.db_name) {
+            connConfig = connConfig.endsWith('/') ? connConfig + bridge.db_name : connConfig + '/' + bridge.db_name;
+        }
+        const conn = await mysql.createConnection(connConfig);
+        
+        const [statusRows] = await conn.execute(`SELECT ${lock.field} as val FROM ${lock.table} WHERE ${lock.name_col} = ? LIMIT 1`, [lock.name_val]);
+        const nextVal = (statusRows[0]?.val == 1) ? 0 : 1;
+        
+        await conn.execute(`UPDATE ${lock.table} SET ${lock.field} = ? WHERE ${lock.name_col} = ?`, [nextVal, lock.name_val]);
+        await conn.end();
+        
+        res.json({ success: true, locked: nextVal === 1 });
+    } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 app.listen(port, () => console.log(`Infrastructure Control Center running on port ${port}`));
