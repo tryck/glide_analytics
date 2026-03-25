@@ -9,20 +9,20 @@ const PageHeader = styled.div`
   h1 {
     font-size: 1.8rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--color-text-strong);
     margin-bottom: 0.5rem;
   }
   p {
-    color: #a0a0a5;
+    color: var(--color-text-muted);
     font-size: 0.9rem;
   }
 `;
 
 const Container = styled.div`
-  background-color: #161618;
+  background-color: var(--color-bg-card);
   border-radius: 12px;
   padding: 1.5rem;
-  border: 1px solid #2c2c2e;
+  border: 1px solid var(--color-border);
 `;
 
 const TableHeaderLine = styled.div`
@@ -34,7 +34,7 @@ const TableHeaderLine = styled.div`
   h2 {
     font-size: 1.2rem;
     font-weight: 600;
-    color: #fff;
+    color: var(--color-text-primary);
     margin: 0;
   }
 `;
@@ -53,14 +53,14 @@ const SearchBox = styled.div`
   svg {
     position: absolute;
     left: 12px;
-    color: #8e8e93;
+    color: var(--color-input-placeholder);
     font-size: 0.9rem;
   }
 
   input {
-    background: #1c1c1e;
-    border: 1px solid #2c2c2e;
-    color: #fff;
+    background: var(--color-input-bg);
+    border: 1px solid var(--color-input-border);
+    color: var(--color-input-text);
     padding: 0.5rem 1rem 0.5rem 2.2rem;
     border-radius: 8px;
     font-size: 0.85rem;
@@ -69,19 +69,19 @@ const SearchBox = styled.div`
     transition: border-color 0.2s;
 
     ::placeholder {
-      color: #8e8e93;
+      color: var(--color-input-placeholder);
     }
 
     &:focus {
-      border-color: #5b45c2;
+      border-color: var(--color-input-focus-border);
     }
   }
 `;
 
 const FilterBtn = styled.button`
-  background: #1c1c1e;
-  border: 1px solid #2c2c2e;
-  color: #fff;
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  color: var(--color-input-text);
   padding: 0.5rem 1rem;
   border-radius: 8px;
   display: flex;
@@ -91,14 +91,14 @@ const FilterBtn = styled.button`
   cursor: pointer;
 
   &:hover {
-    background: #2c2c2e;
+    background: var(--color-panel-strong);
   }
 `;
 
 const AddBtn = styled.button`
   background: linear-gradient(135deg, #8b5cf6, #5b45c2);
   border: none;
-  color: #fff;
+  color: var(--color-text-strong);
   padding: 0.5rem 1rem;
   border-radius: 8px;
   display: flex;
@@ -124,11 +124,11 @@ const Table = styled.table`
   th, td {
     padding: 1rem;
     text-align: left;
-    border-bottom: 1px solid #2c2c2e;
+    border-bottom: 1px solid var(--color-table-divider);
   }
   
   th {
-    color: #8e8e93;
+    color: var(--color-table-head);
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -140,7 +140,7 @@ const Table = styled.table`
     transition: background-color 0.2s;
     
     &:hover {
-      background-color: #1c1c1e;
+      background-color: var(--color-table-row-hover);
     }
     
     &:last-child td {
@@ -153,15 +153,15 @@ const CheckboxBase = styled.div`
   width: 18px;
   height: 18px;
   border-radius: 4px;
-  border: 1px solid ${props => props.checked ? '#8b5cf6' : '#4e4e53'};
-  background-color: ${props => props.checked ? '#8b5cf6' : 'transparent'};
+  border: 1px solid ${props => props.checked ? 'var(--color-accent)' : 'var(--color-input-border)'};
+  background-color: ${props => props.checked ? 'var(--color-accent)' : 'transparent'};
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   
   svg {
-    color: #fff;
+    color: var(--color-text-strong);
     font-size: 12px;
     opacity: ${props => props.checked ? 1 : 0};
   }
@@ -189,12 +189,12 @@ const PostTitleCol = styled.div`
     .title {
       font-size: 0.9rem;
       font-weight: 600;
-      color: #fff;
+      color: var(--color-text-primary);
       margin-bottom: 0.2rem;
     }
     .excerpt {
       font-size: 0.75rem;
-      color: #8e8e93;
+      color: var(--color-text-muted);
     }
   }
 `;
@@ -208,8 +208,8 @@ const AuthorCol = styled.div`
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background: #5b45c2;
-    color: #fff;
+    background: var(--color-accent);
+    color: var(--color-text-strong);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -219,7 +219,7 @@ const AuthorCol = styled.div`
   
   span {
     font-size: 0.85rem;
-    color: #fff;
+    color: var(--color-text-primary);
   }
 `;
 
@@ -235,7 +235,7 @@ const Badge = styled.span`
       case 'Dev': return 'rgba(59, 130, 246, 0.15)';
       case 'Design': return 'rgba(139, 92, 246, 0.15)';
       case 'System': return 'rgba(16, 185, 129, 0.15)';
-      default: return '#2c2c2e';
+      default: return 'var(--color-border)';
     }
   }};
   
@@ -244,7 +244,7 @@ const Badge = styled.span`
       case 'Dev': return '#60a5fa';
       case 'Design': return '#a78bfa';
       case 'System': return '#34d399';
-      default: return '#a0a0a5';
+      default: return 'var(--color-text-muted)';
     }
   }};
 `;
@@ -272,7 +272,7 @@ const StatusBadge = styled.div`
       case 'Published': return '#34d399';
       case 'Draft': return '#fbbf24';
       case 'Scheduled': return '#60a5fa';
-      default: return '#fff';
+      default: return 'var(--color-text-strong)';
     }
   }};
 
@@ -286,7 +286,7 @@ const StatusBadge = styled.div`
       case 'Published': return '#34d399';
       case 'Draft': return '#fbbf24';
       case 'Scheduled': return '#60a5fa';
-      default: return '#fff';
+      default: return 'var(--color-text-strong)';
     }
   }};
   }
@@ -297,13 +297,13 @@ const ActionIcons = styled.div`
   gap: 0.8rem;
   
   svg {
-    color: #8e8e93;
+    color: var(--color-text-muted);
     font-size: 0.95rem;
     cursor: pointer;
     transition: color 0.2s;
     
     &:hover {
-      color: #fff;
+      color: var(--color-text-primary);
     }
     
     &.delete:hover {
@@ -318,10 +318,10 @@ const PaginationRow = styled.div`
   align-items: center;
   margin-top: 1.5rem;
   padding-top: 1rem;
-  border-top: 1px solid #2c2c2e;
+  border-top: 1px solid var(--color-table-divider);
   
   .info {
-    color: #8e8e93;
+    color: var(--color-text-muted);
     font-size: 0.8rem;
   }
   
@@ -333,14 +333,14 @@ const PaginationRow = styled.div`
     button {
       background: transparent;
       border: none;
-      color: #8e8e93;
+      color: var(--color-text-muted);
       font-size: 0.8rem;
       cursor: pointer;
       padding: 0.4rem 0.6rem;
       border-radius: 4px;
       
       &:hover {
-        color: #fff;
+        color: var(--color-text-primary);
       }
       
       &.circle {
@@ -353,12 +353,12 @@ const PaginationRow = styled.div`
         padding: 0;
         
         &.active {
-          border: 1px solid #8b5cf6;
-          color: #fff;
+          border: 1px solid var(--color-accent);
+          color: var(--color-text-strong);
         }
         
         &:hover {
-          background-color: #2c2c2e;
+          background-color: var(--color-table-row-hover);
         }
       }
     }
@@ -379,8 +379,8 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background: #161618;
-  border: 1px solid #2c2c2e;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   width: 500px;
   max-width: 90%;
@@ -389,7 +389,7 @@ const ModalContent = styled.div`
   transition: transform 0.2s;
 
   h3 {
-    color: #fff;
+    color: var(--color-text-strong);
     margin-bottom: 1.5rem;
     font-size: 1.4rem;
   }
@@ -400,7 +400,7 @@ const FormGroup = styled.div`
   
   label {
     display: block;
-    color: #8e8e93;
+    color: var(--color-text-muted);
     font-size: 0.85rem;
     margin-bottom: 0.5rem;
   }
@@ -408,15 +408,15 @@ const FormGroup = styled.div`
   input, select, textarea {
     width: 100%;
     padding: 0.8rem;
-    background: #1c1c1e;
-    border: 1px solid #2c2c2e;
-    color: #fff;
+    background: var(--color-input-bg);
+    border: 1px solid var(--color-input-border);
+    color: var(--color-input-text);
     border-radius: 8px;
     font-size: 0.9rem;
     outline: none;
     
     &:focus {
-      border-color: #5b45c2;
+      border-color: var(--color-input-focus-border);
     }
   }
 `;
@@ -437,15 +437,15 @@ const ModalActions = styled.div`
   
   .cancel {
     background: transparent;
-    border: 1px solid #2c2c2e;
-    color: #fff;
-    &:hover { background: #2c2c2e; }
+    border: 1px solid var(--color-border);
+    color: var(--color-text-strong);
+    &:hover { background: var(--color-panel-strong); }
   }
   
   .save {
     background: linear-gradient(135deg, #8b5cf6, #5b45c2);
     border: none;
-    color: #fff;
+    color: var(--color-text-strong);
     &:hover { opacity: 0.9; }
   }
 `;
@@ -606,7 +606,7 @@ const AdminPosts = () => {
             <button className="circle active">1</button>
             <button className="circle">2</button>
             <button className="circle">3</button>
-            <span style={{ color: '#8e8e93' }}>...</span>
+            <span style={{ color: 'var(--color-text-muted)' }}>...</span>
             <button className="circle">9</button>
             <button>Next</button>
           </div>

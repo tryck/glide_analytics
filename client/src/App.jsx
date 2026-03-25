@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { PieChart, RefreshCw } from 'lucide-react';
 
 // Sub-components
 import Login from './components/Login';
@@ -42,6 +41,7 @@ function App() {
    const [logs, setLogs] = useState([]);
    const [showLogModal, setShowLogModal] = useState(false);
    const [logLoading, setLogLoading] = useState(false);
+   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
 
    // Global Auth Config
    axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
@@ -59,6 +59,11 @@ function App() {
       );
       return () => axios.interceptors.response.eject(interceptor);
    }, []);
+
+   useEffect(() => {
+      document.body.classList.toggle('light-theme', theme === 'light');
+      localStorage.setItem('theme', theme);
+   }, [theme]);
 
    useEffect(() => {
       if (view === 'handshakes' && selectedBridge && selectedTableIdx !== null) {
@@ -153,6 +158,75 @@ function App() {
       }
    };
 
+   const toggleTheme = () => {
+      setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+   };
+
+   const formatViewLabel = (value) => value
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+
+   const headerMetaByView = {
+      dashboard: {
+         title: 'Operations Dashboard',
+         subtitle: 'Live overview of network health, throughput, and module status',
+      },
+      handshakes: {
+         title: 'Sites',
+         subtitle: 'Manage site pipelines, statuses, and telemetry',
+      },
+      products: {
+         title: 'Products',
+         subtitle: 'Configure products, mappings, and synchronization settings',
+      },
+      clients: {
+         title: 'Clients',
+         subtitle: 'Manage client accounts and linked site resources',
+      },
+      media: {
+         title: 'Media',
+         subtitle: 'Browse and manage uploaded media assets',
+      },
+      posts: {
+         title: 'Posts',
+         subtitle: 'Create and manage post publishing content',
+      },
+      'admin-posts': {
+         title: 'Admin Posts',
+         subtitle: 'Control editorial workflows and post approvals',
+      },
+      pages: {
+         title: 'Pages',
+         subtitle: 'Manage static pages and page-level content',
+      },
+      comments: {
+         title: 'Comments',
+         subtitle: 'Review and moderate user comments',
+      },
+      appearance: {
+         title: 'Appearance',
+         subtitle: 'Adjust visual settings and UI presentation',
+      },
+      plugins: {
+         title: 'Plugins',
+         subtitle: 'Configure plugin integrations and extensions',
+      },
+      users: {
+         title: 'Users',
+         subtitle: 'Manage user access, permissions, and roles',
+      },
+      settings: {
+         title: 'Settings',
+         subtitle: 'Update system configuration and preferences',
+      },
+   };
+
+   const headerMeta = headerMetaByView[view] || {
+      title: formatViewLabel(view),
+      subtitle: 'Manage this section from the control panel',
+   };
+
    if (!isAuthenticated) return <Login API_BASE={API_BASE} onLogin={(tok) => {
       localStorage.setItem('token', tok);
       axios.defaults.headers.common['Authorization'] = `Bearer ${tok}`;
@@ -196,7 +270,7 @@ function App() {
    };
 
    return (
-      <div className="flex min-h-screen bg-[var(--color-bg-main)] text-white">
+      <div className="flex min-h-screen bg-[var(--color-bg-main)] text-[var(--color-text-primary)]">
          <Sidebar
             activeView={view}
             setView={setView}
@@ -206,7 +280,13 @@ function App() {
             setSelectedTableIdx={setSelectedTableIdx}
          />
          <div className="flex-1 ml-[260px] relative font-['Lexend']">
-            <Header fetchData={fetchData} />
+            <Header
+               fetchData={fetchData}
+               theme={theme}
+               onToggleTheme={toggleTheme}
+               title={headerMeta.title}
+               subtitle={headerMeta.subtitle}
+            />
 
             {renderContent()}
 

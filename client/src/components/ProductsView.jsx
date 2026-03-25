@@ -7,20 +7,20 @@ const PageHeader = styled.div`
   h1 {
     font-size: 1.8rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--color-text-strong);
     margin-bottom: 0.5rem;
   }
   p {
-    color: #a0a0a5;
+    color: var(--color-text-muted);
     font-size: 0.9rem;
   }
 `;
 
 const Container = styled.div`
-  background-color: #161618;
+  background-color: var(--color-bg-card);
   border-radius: 12px;
   padding: 1.5rem;
-  border: 1px solid #2c2c2e;
+  border: 1px solid var(--color-border);
 `;
 
 const TableHeaderLine = styled.div`
@@ -32,7 +32,7 @@ const TableHeaderLine = styled.div`
   h2 {
     font-size: 1.2rem;
     font-weight: 600;
-    color: #fff;
+    color: var(--color-text-primary);
     margin: 0;
   }
 `;
@@ -51,14 +51,14 @@ const SearchBox = styled.div`
   svg {
     position: absolute;
     left: 12px;
-    color: #8e8e93;
+    color: var(--color-input-placeholder);
     font-size: 0.9rem;
   }
 
   input {
-    background: #1c1c1e;
-    border: 1px solid #2c2c2e;
-    color: #fff;
+    background: var(--color-input-bg);
+    border: 1px solid var(--color-input-border);
+    color: var(--color-input-text);
     padding: 0.5rem 1rem 0.5rem 2.2rem;
     border-radius: 8px;
     font-size: 0.85rem;
@@ -67,19 +67,19 @@ const SearchBox = styled.div`
     transition: border-color 0.2s;
 
     &::placeholder {
-      color: #8e8e93;
+      color: var(--color-input-placeholder);
     }
 
     &:focus {
-      border-color: #5b45c2;
+      border-color: var(--color-input-focus-border);
     }
   }
 `;
 
 const FilterBtn = styled.button`
-  background: #1c1c1e;
-  border: 1px solid #2c2c2e;
-  color: #fff;
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  color: var(--color-input-text);
   padding: 0.5rem 1rem;
   border-radius: 8px;
   display: flex;
@@ -89,14 +89,14 @@ const FilterBtn = styled.button`
   cursor: pointer;
 
   &:hover {
-    background: #2c2c2e;
+    background: var(--color-panel-strong);
   }
 `;
 
 const AddBtn = styled.button`
   background: linear-gradient(135deg, #8b5cf6, #5b45c2);
   border: none;
-  color: #fff;
+  color: var(--color-text-strong);
   padding: 0.5rem 1rem;
   border-radius: 8px;
   display: flex;
@@ -122,11 +122,11 @@ const Table = styled.table`
   th, td {
     padding: 1rem;
     text-align: left;
-    border-bottom: 1px solid #2c2c2e;
+    border-bottom: 1px solid var(--color-table-divider);
   }
   
   th {
-    color: #8e8e93;
+    color: var(--color-table-head);
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -139,7 +139,7 @@ const Table = styled.table`
     cursor: pointer;
     
     &:hover {
-      background-color: #1c1c1e;
+      background-color: var(--color-table-row-hover);
     }
     
     &:last-child td {
@@ -152,15 +152,15 @@ const CheckboxBase = styled.div`
   width: 18px;
   height: 18px;
   border-radius: 4px;
-  border: 1px solid ${props => props.checked ? '#8b5cf6' : '#4e4e53'};
-  background-color: ${props => props.checked ? '#8b5cf6' : 'transparent'};
+  border: 1px solid ${props => props.checked ? 'var(--color-accent)' : 'var(--color-input-border)'};
+  background-color: ${props => props.checked ? 'var(--color-accent)' : 'transparent'};
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   
   svg {
-    color: #fff;
+    color: var(--color-text-strong);
     font-size: 12px;
     opacity: ${props => props.checked ? 1 : 0};
   }
@@ -181,24 +181,24 @@ const ProductIdentityCol = styled.div`
     width: 44px;
     height: 32px;
     border-radius: 6px;
-    background: #1c1c1e;
+    background: var(--color-input-bg);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #5b45c2;
-    border: 1px solid #2c2c2e;
+    color: var(--color-accent);
+    border: 1px solid var(--color-input-border);
   }
 
   .info {
     .title {
       font-size: 0.9rem;
       font-weight: 600;
-      color: #fff;
+      color: var(--color-text-primary);
       margin-bottom: 0.2rem;
     }
     .excerpt {
       font-size: 0.75rem;
-      color: #8e8e93;
+      color: var(--color-text-muted);
     }
   }
 `;
@@ -244,10 +244,10 @@ const PaginationRow = styled.div`
   align-items: center;
   margin-top: 1.5rem;
   padding-top: 1rem;
-  border-top: 1px solid #2c2c2e;
+  border-top: 1px solid var(--color-table-divider);
   
   .info {
-    color: #8e8e93;
+    color: var(--color-text-muted);
     font-size: 0.8rem;
   }
   
@@ -259,14 +259,14 @@ const PaginationRow = styled.div`
     button {
       background: transparent;
       border: none;
-      color: #8e8e93;
+      color: var(--color-text-muted);
       font-size: 0.8rem;
       cursor: pointer;
       padding: 0.4rem 0.6rem;
       border-radius: 4px;
       
       &:hover {
-        color: #fff;
+        color: var(--color-text-primary);
       }
       
       &.circle {
@@ -279,12 +279,12 @@ const PaginationRow = styled.div`
         padding: 0;
         
         &.active {
-          border: 1px solid #8b5cf6;
-          color: #fff;
+          border: 1px solid var(--color-accent);
+          color: var(--color-text-strong);
         }
         
         &:hover {
-          background-color: #2c2c2e;
+          background-color: var(--color-table-row-hover);
         }
       }
     }
@@ -308,10 +308,10 @@ export function ProductsView({ products, bridges, handleEditProduct }) {
 
    return (
       <div className="p-12 animate-in-fade">
-         <PageHeader>
-            <h1>Software Artifacts</h1>
-            <p>Binary registry and logical field mapping definitions</p>
-         </PageHeader>
+            {/* <PageHeader>
+               <h1>Software Artifacts</h1>
+               <p>Binary registry and logical field mapping definitions</p>
+            </PageHeader> */}
 
          <Container>
             <TableHeaderLine>
@@ -362,16 +362,16 @@ export function ProductsView({ products, bridges, handleEditProduct }) {
                            {(p.field_mapping?.tables || []).map((t, idx) => (
                               <Badge key={idx}>{t.name}</Badge>
                            ))}
-                           {(!p.field_mapping?.tables || p.field_mapping.tables.length === 0) && <span style={{ color: '#444', fontSize: '10px' }}>No Metrics Engaged</span>}
+                           {(!p.field_mapping?.tables || p.field_mapping.tables.length === 0) && <span style={{ color: 'var(--color-text-muted)', fontSize: '10px' }}>No Metrics Engaged</span>}
                         </td>
                         <td>
-                           <span style={{ fontSize: '0.85rem', color: '#d0d0d5' }}>{bridges.filter(b => b.product_id === p.id).length} Active Connections</span>
+                           <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>{bridges.filter(b => b.product_id === p.id).length} Active Connections</span>
                         </td>
                         <td>
                            <StatusBadge>Operational</StatusBadge>
                         </td>
                         <td>
-                           <div className="text-[#8e8e93] hover:text-white cursor-pointer transition-colors"><BsThreeDotsVertical /></div>
+                           <div className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] cursor-pointer transition-colors"><BsThreeDotsVertical /></div>
                         </td>
                      </tr>
                   ))}

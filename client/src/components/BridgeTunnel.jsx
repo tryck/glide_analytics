@@ -89,28 +89,28 @@ export default function BridgeTunnel({
                         <div className="text-[11px] font-black uppercase tracking-[0.4em]">Syncing Remote Stream...</div>
                      </div>
                   ) : (
-                     <div className="flex-1 border border-white/[0.03] rounded-[2.5rem] overflow-hidden bg-[#0a0a0c]/60 backdrop-blur-2xl flex flex-col shadow-2xl">
+                     <div className="flex-1 border border-[var(--color-border)] rounded-[2.5rem] overflow-hidden bg-[var(--color-bg-card-soft)] backdrop-blur-2xl flex flex-col shadow-2xl">
                         <div className="overflow-auto flex-1 custom-scrollbar">
                            <table className="w-full text-left border-collapse">
-                              <thead className="sticky top-0 bg-[#0a0a0c] border-b border-white/[0.05] z-10">
+                              <thead className="sticky top-0 bg-[var(--color-bg-card-soft)] border-b border-[var(--color-border)] z-10">
                                  <tr>
                                     {bridgeTableData && bridgeTableData.length > 0 ? Object.keys(bridgeTableData[0]).map(k => (
-                                       <th key={k} className="px-8 py-6 text-[10px] font-black text-slate-600 uppercase tracking-[0.2em]">{k}</th>
-                                    )) : <th className="px-8 py-6 text-[10px] font-black text-slate-600 uppercase tracking-[0.2em]">Field Mapping...</th>}
+                                       <th key={k} className="px-8 py-6 text-[10px] font-black text-[var(--color-text-secondary)] uppercase tracking-[0.2em]">{k}</th>
+                                    )) : <th className="px-8 py-6 text-[10px] font-black text-[var(--color-text-secondary)] uppercase tracking-[0.2em]">Field Mapping...</th>}
                                  </tr>
                               </thead>
-                              <tbody className="divide-y divide-white/[0.02]">
+                              <tbody className="divide-y divide-[var(--color-border)]/20">
                                  {bridgeTableData?.map((row, rIdx) => (
-                                    <tr key={rIdx} className="hover:bg-white/[0.02] transition-colors group">
+                                    <tr key={rIdx} className="hover:bg-[var(--color-table-row-hover)] transition-colors group">
                                        {Object.values(row).map((val, vIdx) => (
-                                          <td key={vIdx} className="px-8 py-5 text-[12px] font-medium text-slate-400 whitespace-nowrap overflow-hidden text-ellipsis max-w-[240px] tabular-nums group-hover:text-white transition-colors">
-                                             {val === null ? <span className="text-slate-800 italic">null</span> : val.toString()}
+                                          <td key={vIdx} className="px-8 py-5 text-[12px] font-medium text-[var(--color-text-muted)] whitespace-nowrap overflow-hidden text-ellipsis max-w-[240px] tabular-nums group-hover:text-[var(--color-text-primary)] transition-colors">
+                                             {val === null ? <span className="text-[var(--color-text-primary)] italic">null</span> : val.toString()}
                                           </td>
                                        ))}
                                     </tr>
                                  ))}
                                  {(!bridgeTableData || bridgeTableData.length === 0) && (
-                                    <tr><td colSpan="100" className="py-32 text-center opacity-20 text-[12px] font-black uppercase tracking-[0.5em]">No signal telemetry returned.</td></tr>
+                                    <tr><td colSpan="100" className="py-32 text-center opacity-20 text-[12px] font-black uppercase tracking-[0.5em] text-[var(--color-text-primary)]">No signal telemetry returned.</td></tr>
                                  )}
                               </tbody>
                            </table>
