@@ -17,6 +17,14 @@ jobs:
         script: |
           cd /var/www/html/glide_analytics
           git pull origin main
-          npm install 
-          # Restart the server - change this to match your PM2 process name or use npm run server
-          pm2 restart all || npm run server &
+
+          # 1. Update and Build the Frontend (React)
+          cd client
+          npm install
+          npm run build
+
+          # 2. Update and Restart the Backend
+          cd ../server
+          npm install
+          # Restart the PM2 process - change 'all' to your specific server process name if needed
+          pm2 restart all || node index.js &
