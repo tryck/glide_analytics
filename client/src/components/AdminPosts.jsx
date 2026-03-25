@@ -522,7 +522,7 @@ const AdminPosts = () => {
   return (
     <AdminLayout>
       <PageHeader>
-        <h1>Posts</h1>
+        <h1>Posts22</h1>
         <p>Manage your blog content and articles</p>
       </PageHeader>
 
