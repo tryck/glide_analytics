@@ -17,6 +17,6 @@ jobs:
         script: |
           cd /var/www/html/glide_analytics
           git pull origin main
-          npm install
+          npm install 
           # Restart the server - change this to match your PM2 process name or use npm run server
           pm2 restart all || npm run server &
