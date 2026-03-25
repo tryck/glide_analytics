@@ -23,13 +23,13 @@ const MainContent = styled.main`
 `;
 
 const AdminLayout = ({ children }) => {
-    return (
-        <LayoutContainer>
-            <Sidebar />
-            <Header />
-            <MainContent>{children}</MainContent>
-        </LayoutContainer>
-    );
+  return (
+    <LayoutContainer>
+      <Sidebar />
+      <Header />
+      <MainContent>{children}</MainContent>
+    </LayoutContainer>
+  );
 };
 
 export default AdminLayout;
