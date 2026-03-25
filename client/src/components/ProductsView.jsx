@@ -501,11 +501,73 @@ export function ProductEditView({ selectedProduct, setSelectedProduct, selectedT
                   </div>
                </div>
             ) : (
-               <div className="h-full flex flex-col items-center justify-center opacity-30 space-y-8 animate-in-fade">
-                  <div className="p-12 rounded-full bg-white/[0.02] border border-white/10 shadow-2xl"><BsDatabase size={64} className="text-indigo-500" /></div>
-                  <div className="text-center max-w-sm">
-                     <h3 className="text-2xl font-black tracking-tight text-white mb-2 uppercase">Table Shell</h3>
-                     <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500 leading-relaxed">Select a database architecture block from the left to engage schema property management.</p>
+               <div className="max-w-xl mx-auto space-y-12 animate-in-slide-up py-10">
+                  <div className="text-center space-y-4">
+                     <div className="inline-flex p-6 rounded-3xl bg-indigo-600/10 border border-indigo-500/20 shadow-2xl mb-4">
+                        <BsBoxes size={48} className="text-indigo-500" />
+                     </div>
+                     <h2 className="text-3xl font-black tracking-tight text-white uppercase">Product Settings</h2>
+                     <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500 leading-relaxed">Core logical configuration and license mapping</p>
+                  </div>
+
+                  <div className="space-y-6">
+                     <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[2.5rem] space-y-8">
+                        <h4 className="text-[10px] font-bold text-indigo-500 uppercase tracking-[0.4em] px-1">License & Billing Schema</h4>
+                        
+                        <div className="space-y-4">
+                           <div className="space-y-2">
+                              <label className="text-[9px] font-bold text-slate-500 uppercase tracking-widest px-1">License Database Name (Optional)</label>
+                              <input 
+                                 value={selectedProduct.field_mapping?.licence_db || ''} 
+                                 onChange={e => {
+                                    syncProduct({ ...selectedProduct, field_mapping: { ...selectedProduct.field_mapping, licence_db: e.target.value } });
+                                 }}
+                                 placeholder="Override database (Leave blank for default client DB)"
+                                 className="w-full bg-black/40 border border-white/5 rounded-2xl px-6 py-4 text-xs font-mono outline-none focus:border-indigo-500/30 transition-all text-indigo-400" 
+                              />
+                           </div>
+
+                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                 <label className="text-[9px] font-bold text-slate-500 uppercase tracking-widest px-1">Subscriptions Table</label>
+                                 <input 
+                                    value={selectedProduct.field_mapping?.licence_subscriptions_table || 'license_subscriptions'} 
+                                    onChange={e => {
+                                       syncProduct({ ...selectedProduct, field_mapping: { ...selectedProduct.field_mapping, licence_subscriptions_table: e.target.value } });
+                                    }}
+                                    placeholder="license_subscriptions"
+                                    className="w-full bg-black/40 border border-white/5 rounded-2xl px-6 py-4 text-xs font-mono outline-none focus:border-indigo-500/30 transition-all text-white" 
+                                 />
+                              </div>
+                              <div className="space-y-2">
+                                 <label className="text-[9px] font-bold text-slate-500 uppercase tracking-widest px-1">Bills Table</label>
+                                 <input 
+                                    value={selectedProduct.field_mapping?.licence_bills_table || 'bills'} 
+                                    onChange={e => {
+                                       syncProduct({ ...selectedProduct, field_mapping: { ...selectedProduct.field_mapping, licence_bills_table: e.target.value } });
+                                    }}
+                                    placeholder="bills"
+                                    className="w-full bg-black/40 border border-white/5 rounded-2xl px-6 py-4 text-xs font-mono outline-none focus:border-indigo-500/30 transition-all text-white" 
+                                 />
+                              </div>
+                              <div className="space-y-2">
+                                 <label className="text-[9px] font-bold text-slate-500 uppercase tracking-widest px-1">Payments Table</label>
+                                 <input 
+                                    value={selectedProduct.field_mapping?.licence_payments_table || 'bill_payments'} 
+                                    onChange={e => {
+                                       syncProduct({ ...selectedProduct, field_mapping: { ...selectedProduct.field_mapping, licence_payments_table: e.target.value } });
+                                    }}
+                                    placeholder="bill_payments"
+                                    className="w-full bg-black/40 border border-white/5 rounded-2xl px-6 py-4 text-xs font-mono outline-none focus:border-indigo-500/30 transition-all text-white" 
+                                 />
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+
+                     <div className="text-center">
+                        <p className="text-[9px] text-slate-700 uppercase tracking-widest font-black">Select a table from the sidebar to edit granular field metrics</p>
+                     </div>
                   </div>
                </div>
             )}

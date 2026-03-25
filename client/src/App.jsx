@@ -14,6 +14,7 @@ import Header from './components/Header';
 import AdminPosts from './components/AdminPosts';
 import GenericView from './components/GenericView';
 import BridgeTunnel from './components/BridgeTunnel';
+import Subscriptions from './components/Subscriptions';
 import { LogModal, BridgeModal, ClientModal } from './components/Modals';
 
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
@@ -188,6 +189,10 @@ function App() {
          title: 'Media',
          subtitle: 'Browse and manage uploaded media assets',
       },
+      subscriptions: {
+         title: 'Subscriptions',
+         subtitle: 'Monitor license deployments and billing activity',
+      },
       posts: {
          title: 'Posts',
          subtitle: 'Create and manage post publishing content',
@@ -259,6 +264,7 @@ function App() {
             setClientForm={setClientForm}
          />;
          case 'media': return <MediaView />;
+         case 'subscriptions': return <Subscriptions bridges={bridges} products={products} />;
          case 'posts': return <TableView1 />;
          case 'admin-posts': return <AdminPosts />;
          default:

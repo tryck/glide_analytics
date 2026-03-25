@@ -1,7 +1,7 @@
 import React from 'react';
 import {
    LayoutDashboard, MapPin, Briefcase, Boxes, FileText, Image, FileCode,
-   MessageSquare, Palette, Puzzle, Users, Settings, LogOut
+   MessageSquare, Palette, Puzzle, Users, Settings, LogOut, CreditCard
 } from 'lucide-react';
 
 export default function Sidebar({ activeView, setView, onLogout, setSelectedProduct, setSelectedBridge, setSelectedTableIdx }) {
@@ -26,6 +26,7 @@ export default function Sidebar({ activeView, setView, onLogout, setSelectedProd
             { id: 'handshakes', label: 'Sites', icon: MapPin },
             { id: 'clients', label: 'Clients', icon: Briefcase },
             { id: 'products', label: 'Products', icon: Boxes },
+            { id: 'subscriptions', label: 'Subscriptions', icon: CreditCard },
             // { id: 'posts', label: 'Posts', icon: FileText },
             // { id: 'media', label: 'Media', icon: Image },
             // { id: 'pages', label: 'Pages', icon: FileCode },

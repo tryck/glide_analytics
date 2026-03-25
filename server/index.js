@@ -176,26 +176,110 @@ app.get('/api/client-products/:id/logs', async (req, res) => {
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-app.get('/api/client-products/:id/tables/:tableName', async (req, res) => {
+app.get('/api/client-products/:id/tables/:tableName', checkAuth, async (req, res) => {
     try {
         const [rows] = await pool.execute(`SELECT cp.* FROM client_product cp WHERE id = ?`, [req.params.id]);
         const bridge = rows[0];
         if (!bridge) return res.status(404).json({ error: 'Bridge not found' });
 
+        const targetDb = req.query.db || bridge.db_name;
+
         let connConfig;
         if (bridge.connection_string_name && process.env[bridge.connection_string_name]) {
             connConfig = process.env[bridge.connection_string_name];
-            if (bridge.connection_string_name === 'RDS_MAIN' && bridge.db_name) {
-                connConfig = connConfig.endsWith('/') ? connConfig + bridge.db_name : connConfig + '/' + bridge.db_name;
+            if (bridge.connection_string_name === 'RDS_MAIN' && targetDb) {
+                connConfig = connConfig.endsWith('/') ? connConfig + targetDb : connConfig + '/' + targetDb;
             }
         } else {
-            connConfig = { host: process.env.DB_HOST, user: process.env.DB_USER, password: process.env.DB_PASSWORD, database: bridge.db_name };
+            connConfig = { host: process.env.DB_HOST, user: process.env.DB_USER, password: process.env.DB_PASSWORD, database: targetDb };
         }
 
         const conn = await mysql.createConnection(connConfig);
-        const [data] = await conn.execute(`SELECT * FROM ${req.params.tableName} ORDER BY id DESC LIMIT 20`);
+        const [data] = await conn.execute(`SELECT * FROM ${req.params.tableName} ORDER BY id DESC LIMIT 50`);
         await conn.end();
         res.json(data);
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/client-products/:id/tables/:tableName', checkAuth, async (req, res) => {
+    try {
+        const [rows] = await pool.execute(`SELECT cp.* FROM client_product cp WHERE id = ?`, [req.params.id]);
+        const bridge = rows[0];
+        if (!bridge) return res.status(404).json({ error: 'Bridge not found' });
+
+        const targetDb = req.query.db || bridge.db_name;
+        const body = req.body;
+        
+        let connConfig;
+        if (bridge.connection_string_name && process.env[bridge.connection_string_name]) {
+            connConfig = process.env[bridge.connection_string_name];
+            if (bridge.connection_string_name === 'RDS_MAIN' && targetDb) {
+                connConfig = connConfig.endsWith('/') ? connConfig + targetDb : connConfig + '/' + targetDb;
+            }
+        } else {
+            connConfig = { host: process.env.DB_HOST, user: process.env.DB_USER, password: process.env.DB_PASSWORD, database: targetDb };
+        }
+
+        const conn = await mysql.createConnection(connConfig);
+        const [fields] = Object.keys(body).map(k => k);
+        const values = Object.values(body);
+        const placeholders = values.map(() => '?').join(', ');
+        const [reslt] = await conn.execute(`INSERT INTO ${req.params.tableName} (${Object.keys(body).join(', ')}) VALUES (${placeholders})`, values);
+        await conn.end();
+        res.json({ id: reslt.insertId, ...body });
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.put('/api/client-products/:id/tables/:tableName/:rowId', checkAuth, async (req, res) => {
+    try {
+        const [rows] = await pool.execute(`SELECT cp.* FROM client_product cp WHERE id = ?`, [req.params.id]);
+        const bridge = rows[0];
+        if (!bridge) return res.status(404).json({ error: 'Bridge not found' });
+
+        const targetDb = req.query.db || bridge.db_name;
+        const body = req.body;
+        
+        let connConfig;
+        if (bridge.connection_string_name && process.env[bridge.connection_string_name]) {
+            connConfig = process.env[bridge.connection_string_name];
+            if (bridge.connection_string_name === 'RDS_MAIN' && targetDb) {
+                connConfig = connConfig.endsWith('/') ? connConfig + targetDb : connConfig + '/' + targetDb;
+            }
+        } else {
+            connConfig = { host: process.env.DB_HOST, user: process.env.DB_USER, password: process.env.DB_PASSWORD, database: targetDb };
+        }
+
+        const conn = await mysql.createConnection(connConfig);
+        const updates = Object.keys(body).map(k => `${k} = ?`).join(', ');
+        const values = [...Object.values(body), req.params.rowId];
+        await conn.execute(`UPDATE ${req.params.tableName} SET ${updates} WHERE id = ?`, values);
+        await conn.end();
+        res.json({ success: true });
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/client-products/:id/tables/:tableName/:rowId', checkAuth, async (req, res) => {
+    try {
+        const [rows] = await pool.execute(`SELECT cp.* FROM client_product cp WHERE id = ?`, [req.params.id]);
+        const bridge = rows[0];
+        if (!bridge) return res.status(404).json({ error: 'Bridge not found' });
+
+        const targetDb = req.query.db || bridge.db_name;
+
+        let connConfig;
+        if (bridge.connection_string_name && process.env[bridge.connection_string_name]) {
+            connConfig = process.env[bridge.connection_string_name];
+            if (bridge.connection_string_name === 'RDS_MAIN' && targetDb) {
+                connConfig = connConfig.endsWith('/') ? connConfig + targetDb : connConfig + '/' + targetDb;
+            }
+        } else {
+            connConfig = { host: process.env.DB_HOST, user: process.env.DB_USER, password: process.env.DB_PASSWORD, database: targetDb };
+        }
+
+        const conn = await mysql.createConnection(connConfig);
+        await conn.execute(`DELETE FROM ${req.params.tableName} WHERE id = ?`, [req.params.rowId]);
+        await conn.end();
+        res.json({ success: true });
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
