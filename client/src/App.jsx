@@ -44,6 +44,10 @@ function App() {
    const [logLoading, setLogLoading] = useState(false);
    const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
 
+   const [subscriptionFilterProduct, setSubscriptionFilterProduct] = useState(null);
+   const [selectedClientId, setSelectedClientId] = useState(null);
+   const [refreshToggle, setRefreshToggle] = useState(0);
+
    // Global Auth Config
    axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
 
@@ -88,14 +92,17 @@ function App() {
       setSelectedProduct(null);
       setSelectedBridge(null);
       setSelectedTableIdx(null);
+      setSubscriptionFilterProduct(null);
+      setSelectedClientId(null);
+      setRefreshToggle(0);
    };
 
-   const syncProduct = async (updatedProd) => {
+   const syncProduct = async (updatedProduct) => {
       try {
-         await axios.put(`${API_BASE}/products/${updatedProd.id}`, updatedProd);
+         await axios.put(`${API_BASE}/products/${updatedProduct.id}`, updatedProduct);
          const res = await axios.get(`${API_BASE}/products`);
          setProducts(Array.isArray(res.data) ? res.data : []);
-         const fresh = res.data.find(p => p.id === updatedProd.id);
+         const fresh = res.data.find(p => p.id === updatedProduct.id);
          if (selectedProduct && selectedProduct.id === fresh.id) setSelectedProduct(fresh);
       } catch (e) { alert("Sync Failed"); }
    }
@@ -264,7 +271,16 @@ function App() {
             setClientForm={setClientForm}
          />;
          case 'media': return <MediaView />;
-         case 'subscriptions': return <Subscriptions bridges={bridges} products={products} />;
+         case 'subscriptions': return <Subscriptions 
+            bridges={bridges} 
+            products={products} 
+            clients={clients}
+            filterProduct={subscriptionFilterProduct} 
+            selectedClientId={selectedClientId}
+            setSelectedClientId={setSelectedClientId}
+            refreshToggle={refreshToggle}
+            setRefreshToggle={setRefreshToggle}
+         />;
          case 'posts': return <TableView1 />;
          case 'admin-posts': return <AdminPosts />;
          default:
@@ -279,11 +295,24 @@ function App() {
       <div className="flex min-h-screen bg-[var(--color-bg-main)] text-[var(--color-text-primary)]">
          <Sidebar
             activeView={view}
-            setView={setView}
+            setView={(v) => {
+               setView(v);
+               if (v !== 'subscriptions') {
+                  setSubscriptionFilterProduct(null);
+                  setSelectedClientId(null);
+               }
+            }}
             onLogout={handleLogout}
             setSelectedProduct={setSelectedProduct}
             setSelectedBridge={setSelectedBridge}
             setSelectedTableIdx={setSelectedTableIdx}
+            products={products}
+            bridges={bridges}
+            clients={clients}
+            setSubscriptionFilterProduct={setSubscriptionFilterProduct}
+            subscriptionFilterProduct={subscriptionFilterProduct}
+            setSelectedClientId={setSelectedClientId}
+            setRefreshToggle={setRefreshToggle}
          />
          <div className="flex-1 ml-[260px] relative font-['Lexend']">
             <Header

@@ -182,6 +182,15 @@ body::after {
     @apply px-6 py-4 text-[10px] font-semibold uppercase tracking-wider;
   }
 
+  .sidebar-subitem {
+     @apply transition-all duration-200;
+  }
+  
+  .sidebar-subitem:hover {
+     background-color: var(--color-sidebar-hover);
+     transform: translateX(4px);
+  }
+
   .card-surface {
     background: var(--color-bg-card);
     border: 1px solid var(--color-border);

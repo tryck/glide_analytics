@@ -24,15 +24,17 @@ import {
    TrendingUp,
    DollarSign,
    PieChart,
-   Layers
+   Layers,
+   ChevronDown
 } from 'lucide-react';
+import CustomDropdown from './CustomDropdown';
 
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
    ? 'http://localhost:3001/api'
    : '/api';
 
 const Container = styled.div`
-  padding: 2rem;
+  height: 100vh;
   animation: fadeIn 0.5s ease-out;
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
@@ -280,23 +282,68 @@ const Badge = styled.span`
   }};
 `;
 
+const Skeleton = styled.div`
+  background: linear-gradient(90deg, var(--color-panel-soft) 25%, var(--color-panel-strong) 50%, var(--color-panel-soft) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite linear;
+  border-radius: ${props => props.radius || '8px'};
+  width: ${props => props.width || '100%'};
+  height: ${props => props.height || '20px'};
+
+  @keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+`;
+
 const LoadingOverlay = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 5rem;
-  gap: 1.5rem;
+  gap: 2rem;
   color: var(--color-text-muted);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 32px;
+  backdrop-filter: blur(12px);
+  margin-top: 2rem;
+  box-shadow: 0 40px 100px -30px rgba(0,0,0,0.4);
+
+  .loader-container {
+     position: relative;
+     width: 80px;
+     height: 80px;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+  }
+
+  .pulse-ring {
+     position: absolute;
+     width: 100%;
+     height: 100%;
+     border: 2px solid var(--color-accent);
+     border-radius: 50%;
+     animation: pulse 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+  }
 
   .spinner {
-    animation: rotate 2s linear infinite;
+    animation: rotate 3s linear infinite;
     color: var(--color-accent);
+    z-index: 10;
   }
 
   @keyframes rotate {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
+  }
+
+  @keyframes pulse {
+     0% { transform: scale(0.7); opacity: 0; }
+     50% { opacity: 0.5; }
+     100% { transform: scale(1.3); opacity: 0; }
   }
 `;
 
@@ -404,21 +451,47 @@ const ChartWrapper = styled.div`
 `;
 
 const BarContainer = styled.div`
-   height: 200px;
+   height: 240px;
    display: flex;
    align-items: flex-end;
    gap: 1.5rem;
    padding-bottom: 2rem;
    border-bottom: 1px solid var(--color-border);
    margin-bottom: 1rem;
+   margin-left: 50px; /* Space for Y-axis */
+   position: relative;
+`;
+
+const YAxis = styled.div`
+   position: absolute;
+   left: -50px;
+   bottom: 2rem;
+   top: 0;
+   width: 40px;
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+   align-items: flex-end;
+   color: var(--color-text-muted);
+   font-size: 0.6rem;
+   font-weight: 800;
+   font-mono: true;
+`;
+
+const MonthGroup = styled.div`
+   flex: 1;
+   display: flex;
+   align-items: flex-end;
+   justify-content: center;
+   gap: 2px;
+   height: 100%;
+   position: relative;
 `;
 
 const Bar = styled.div`
-   flex: 1;
-   background: linear-gradient(to top, var(--color-accent), #a78bfa);
-   border-radius: 6px 6px 2px 2px;
-   min-width: 30px;
-   position: relative;
+   width: 12px;
+   background: ${props => props.type === 'billed' ? 'linear-gradient(to top, #7c3aed, #a78bfa)' : 'linear-gradient(to top, #10b981, #34d399)'};
+   border-radius: 4px 4px 1px 1px;
    transition: height 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
    height: ${props => props.height}%;
    
@@ -438,6 +511,7 @@ const Bar = styled.div`
          border-radius: 4px;
          white-space: nowrap;
          border: 1px solid var(--color-border);
+         z-index: 10;
       }
    }
 `;
@@ -452,13 +526,102 @@ const BarLabel = styled.div`
    margin-top: 0.75rem;
 `;
 
-export default function Subscriptions({ bridges, products }) {
+const FlexContainer = styled.div`
+  display: flex;
+  height: 100%;
+`;
+
+const ClientSidebar = styled.div`
+  width: 280px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: none;
+  height: 100%;
+  
+  .sidebar-header {
+     padding: 1.5rem;
+     border-bottom: 1px solid var(--color-border);
+     background: var(--color-panel-soft);
+     h3 {
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--color-text-secondary);
+     }
+  }
+
+  .sidebar-list {
+     flex: 1;
+     overflow-y: auto;
+     padding: 1rem;
+     
+     .client-item {
+        padding: 0.85rem 1rem;
+        border-radius: 12px;
+        margin-bottom: 0.5rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        .client-name {
+           font-size: 0.8rem;
+           font-weight: 700;
+           color: var(--color-text-primary);
+        }
+        
+        .client-count {
+           font-size: 0.7rem;
+           font-weight: 800;
+           background: var(--color-panel-strong);
+           color: var(--color-text-muted);
+           padding: 0.1rem 0.5rem;
+           border-radius: 6px;
+        }
+
+        &.active {
+           background: var(--color-accent);
+           .client-name { color: white; }
+           .client-count { background: rgba(255,255,255,0.2); color: white; }
+        }
+
+        &:hover:not(.active) {
+           background: var(--color-panel-soft);
+        }
+     }
+  }
+`;
+
+const MainContentArea = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  padding: 2.5rem;
+  
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 10px; }
+`;
+
+export default function Subscriptions({ 
+   bridges, products, clients, filterProduct, 
+   selectedClientId, setSelectedClientId,
+   refreshToggle, setRefreshToggle 
+}) {
    const [selectedBridge, setSelectedBridge] = useState(null);
    const [activeTab, setActiveTab] = useState('overview'); // overview, plans, bills, payments
+   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
    const [data, setData] = useState([]);
    const [overviewData, setOverviewData] = useState({ bills: [], payments: [] });
    const [loading, setLoading] = useState(false);
    const [searchQuery, setSearchQuery] = useState('');
+
+   const triggerRefresh = () => setRefreshToggle(prev => prev + 1);
 
    // CRUD State
    const [showModal, setShowModal] = useState(false);
@@ -474,7 +637,7 @@ export default function Subscriptions({ bridges, products }) {
             fetchTabData();
          }
       }
-   }, [selectedBridge, activeTab]);
+   }, [selectedBridge, activeTab, refreshToggle]);
 
    const getMapping = () => {
       const product = products.find(p => String(p.id) === String(selectedBridge?.product_id));
@@ -523,8 +686,7 @@ export default function Subscriptions({ bridges, products }) {
          const res = await axios.get(`${API_BASE}/client-products/${selectedBridge.id}/tables/${tableName}${dbParam}`);
          setData(Array.isArray(res.data) ? res.data : []);
       } catch (error) {
-         console.error("Failed to fetch license data:", error);
-         setData([]);
+         console.error("Table Fetch Error:", error);
       } finally {
          setLoading(false);
       }
@@ -533,21 +695,19 @@ export default function Subscriptions({ bridges, products }) {
    const handleSaveSubscription = async (e) => {
       e.preventDefault();
       const fm = getMapping();
-      const tableName = fm.licence_subscriptions_table || 'license_subscriptions';
+      let tableName = fm.licence_subscriptions_table || 'license_subscriptions';
       const dbParam = fm.licence_db ? `?db=${fm.licence_db}` : '';
 
       try {
          if (modalData.id) {
-            const { id, ...payload } = modalData;
-            await axios.put(`${API_BASE}/client-products/${selectedBridge.id}/tables/${tableName}/${id}${dbParam}`, payload);
+            await axios.put(`${API_BASE}/client-products/${selectedBridge.id}/tables/${tableName}/${modalData.id}${dbParam}`, modalData);
          } else {
-            const { id, ...payload } = modalData;
-            await axios.post(`${API_BASE}/client-products/${selectedBridge.id}/tables/${tableName}${dbParam}`, payload);
+            await axios.post(`${API_BASE}/client-products/${selectedBridge.id}/tables/${tableName}${dbParam}`, modalData);
          }
          setShowModal(false);
-         fetchTabData();
+         triggerRefresh();
       } catch (error) {
-         alert("Failed to save subscription");
+         alert("Action Failed");
       }
    };
 
@@ -562,16 +722,37 @@ export default function Subscriptions({ bridges, products }) {
 
       try {
          await axios.delete(`${API_BASE}/client-products/${selectedBridge.id}/tables/${tableName}/${rowId}${dbParam}`);
-         if (activeTab === 'overview') fetchOverviewData(); else fetchTabData();
+         triggerRefresh();
       } catch (error) {
          alert("Delete Failed");
       }
    };
 
-   const filteredSites = bridges.filter(s => 
-      s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.db_name?.toLowerCase().includes(searchQuery.toLowerCase())
-   );
+    const filteredSites = bridges.filter(s => {
+       const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          s.db_name?.toLowerCase().includes(searchQuery.toLowerCase());
+       
+       const matchesClient = !selectedClientId || String(s.client_id) === String(selectedClientId);
+       
+       if (filterProduct) {
+          return matchesSearch && matchesClient && String(s.product_id) === String(filterProduct.id);
+       }
+       return matchesSearch && matchesClient;
+    });
+
+    const filteredClients = Array.isArray(clients) ? clients.filter(c => {
+       if (!filterProduct) return true;
+       return bridges.some(b => String(b.client_id) === String(c.id) && String(b.product_id) === String(filterProduct.id));
+    }) : [];
+
+   const countsByClient = Array.isArray(clients) ? clients.reduce((acc, c) => {
+       if (filterProduct) {
+          acc[c.id] = bridges.filter(b => String(b.client_id) === String(c.id) && String(b.product_id) === String(filterProduct.id)).length;
+       } else {
+          acc[c.id] = bridges.filter(b => String(b.client_id) === String(c.id)).length;
+       }
+       return acc;
+   }, {}) : {};
 
    // Calculations for Overview
    const totalBilled = overviewData.bills.reduce((sum, b) => sum + parseFloat(b.amount || 0), 0);
@@ -579,276 +760,375 @@ export default function Subscriptions({ bridges, products }) {
    const totalBalance = overviewData.bills.reduce((sum, b) => sum + parseFloat(b.balance || 0), 0);
    const collectionRate = totalBilled > 0 ? (totalPaid / totalBilled * 100).toFixed(1) : 0;
 
-   // Process for Chart
-   const monthlyData = overviewData.bills.reduce((acc, b) => {
-      const mon = b.bill_month || 'N/A';
-      acc[mon] = (acc[mon] || 0) + parseFloat(b.amount || 0);
-      return acc;
-   }, {});
-   const chartBars = Object.entries(monthlyData).slice(-6); // last 6 months
-   const maxBar = Math.max(...chartBars.map(c => c[1]), 1);
+   // Pre-fill with last 10 years
+   const currentY = new Date().getFullYear();
+   const availableYears = Array.from({ length: 10 }, (_, i) => currentY - i);
+
+   // Aggregated 12 Months filtered by selectedYear
+   const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+   const aggregatedMonths = monthLabels.map((m, idx) => {
+      const billsInMonth = overviewData.bills.filter(b => {
+         const d = new Date(b.created_at);
+         return (b.bill_month?.includes(m) || d.getMonth() === idx) && d.getFullYear() === selectedYear;
+      });
+      const paymentsInMonth = overviewData.payments.filter(p => {
+         const d = new Date(p.payment_date);
+         return d.getMonth() === idx && d.getFullYear() === selectedYear;
+      });
+      return {
+         month: m,
+         billed: billsInMonth.reduce((s, x) => s + parseFloat(x.amount || 0), 0),
+         paid: paymentsInMonth.reduce((s, x) => s + parseFloat(x.amount || 0), 0)
+      };
+   });
+
+   const maxVal = Math.max(...aggregatedMonths.map(m => Math.max(m.billed, m.paid)), 100);
+
+   const SidebarComponent = () => (
+      <ClientSidebar>
+         <div className="sidebar-header">
+            <h3>Client Registry</h3>
+         </div>
+         <div className="sidebar-list">
+             <div className={`client-item ${!selectedClientId ? 'active' : ''}`} onClick={() => { setSelectedClientId(null); setSelectedBridge(null); }}>
+                <span className="client-name">Global View</span>
+                <span className="client-count">
+                   {filterProduct ? bridges.filter(b => String(b.product_id) === String(filterProduct.id)).length : bridges.length}
+                </span>
+             </div>
+             {filteredClients.map(c => (
+                <div key={c.id} className={`client-item ${selectedClientId === c.id ? 'active' : ''}`} onClick={() => { 
+                   setSelectedClientId(c.id); 
+                   // Find first matching site for this client
+                   const firstSite = bridges.find(b => 
+                      String(b.client_id) === String(c.id) && 
+                      (!filterProduct || String(b.product_id) === String(filterProduct.id))
+                   );
+                   if (firstSite) setSelectedBridge(firstSite);
+                   else setSelectedBridge(null); 
+                   triggerRefresh();
+                }}>
+                   <span className="client-name">{c.name}</span>
+                   <span className="client-count">{countsByClient[c.id] || 0}</span>
+                </div>
+             ))}
+             {filteredClients.length === 0 && filterProduct && (
+                <div className="py-10 text-center opacity-20 italic text-[10px]">No clients for this product</div>
+             )}
+         </div>
+      </ClientSidebar>
+   );
 
    if (!selectedBridge) {
       return (
          <Container>
-            <div className="flex justify-between items-end mb-8">
-               <div>
-                  <h1 className="text-4xl font-black text-gradient uppercase tracking-tight">Licence Hub</h1>
-                  <p className="text-slate-500 font-medium mt-2">Manage subscriptions and billing across your network</p>
-               </div>
-               <div className="flex gap-4">
-                  <div className="relative">
-                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
-                     <input 
-                        type="text" 
-                        placeholder="Search sites..." 
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-[var(--color-accent)] outline-none min-w-[280px] transition-all"
-                     />
+            <FlexContainer>
+               <SidebarComponent />
+               <MainContentArea>
+                  <div className="flex justify-between items-end mb-8">
+                     <div>
+                        <h1 className="text-4xl font-black text-gradient uppercase tracking-tight">Licence Hub</h1>
+                        <p className="text-slate-500 font-medium mt-2">Manage subscriptions and billing across your network</p>
+                     </div>
+                      <div className="flex gap-4 items-center">
+                         {filterProduct && (
+                            <div className="flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 px-4 py-2 rounded-xl">
+                               <div className="w-2 h-2 rounded-full bg-indigo-500" />
+                               <span className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Filtering: {filterProduct.name}</span>
+                            </div>
+                         )}
+                         <div className="relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
+                            <input 
+                               type="text" 
+                               placeholder="Search sites..." 
+                               value={searchQuery}
+                               onChange={(e) => setSearchQuery(e.target.value)}
+                               className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-[var(--color-accent)] outline-none min-w-[280px] transition-all"
+                            />
+                         </div>
+                      </div>
                   </div>
-               </div>
-            </div>
 
-            <SiteGrid>
-               {filteredSites.map(s => (
-                  <SiteCard key={s.id} onClick={() => setSelectedBridge(s)}>
-                     <div className="icon-wrapper">
-                        <Server size={24} />
+                  <SiteGrid>
+                     {filteredSites.map(s => (
+                        <SiteCard key={s.id} onClick={() => setSelectedBridge(s)}>
+                           <div className="icon-wrapper">
+                              <Server size={24} />
+                           </div>
+                           <h3>{s.name}</h3>
+                           <p>{s.db_name || 'Production Instance'}</p>
+                           
+                           <div className="meta">
+                              <span><Clock size={12} /> Last synced 2m ago</span>
+                              <span><Badge type={s.status === 'Online' ? 'success' : 'error'}>{s.status}</Badge></span>
+                           </div>
+                        </SiteCard>
+                     ))}
+                  </SiteGrid>
+                  {filteredSites.length === 0 && (
+                     <div className="py-24 text-center opacity-30">
+                        <Search size={48} className="mx-auto mb-4 text-slate-800" />
+                        <p className="text-xl font-black uppercase tracking-[0.4em]">No matching sites</p>
                      </div>
-                     <h3>{s.name}</h3>
-                     <p>{s.db_name || 'Production Instance'}</p>
-                     
-                     <div className="meta">
-                        <span><Clock size={12} /> Last synced 2m ago</span>
-                        <span><Badge type={s.status === 'Online' ? 'success' : 'error'}>{s.status}</Badge></span>
-                     </div>
-                  </SiteCard>
-               ))}
-               {filteredSites.length === 0 && (
-                  <div className="col-span-full py-20 text-center opacity-30">
-                     <Search size={48} className="mx-auto mb-4" />
-                     <p className="text-xl font-bold uppercase tracking-widest">No matching sites found</p>
-                  </div>
-               )}
-            </SiteGrid>
+                  )}
+               </MainContentArea>
+            </FlexContainer>
          </Container>
       );
    }
 
    return (
       <Container>
-         <DetailHeader>
-            <div className="flex items-center gap-6">
-               <button className="back-btn" onClick={() => setSelectedBridge(null)}>
-                  <ChevronLeft size={18} /> Back to Hub
-               </button>
-               <div className="title-area">
-                  <h2>{selectedBridge.name}</h2>
-                  <p>Managing licence architecture for {selectedBridge.db_name}</p>
-               </div>
-            </div>
-            <div className="flex gap-3">
-               <button className="back-btn" onClick={activeTab === 'overview' ? fetchOverviewData : fetchTabData}>
-                  <RefreshCw size={16} className={loading ? 'animate-spin' : ''} /> Refresh Stream
-               </button>
-            </div>
-         </DetailHeader>
-
-         <TabContainer>
-            <Tab active={activeTab === 'overview'} onClick={() => setActiveTab('overview')}>
-               <TrendingUp size={18} /> Overview
-            </Tab>
-            <Tab active={activeTab === 'plans'} onClick={() => setActiveTab('plans')}>
-               <Layers size={18} /> Plans
-            </Tab>
-            <Tab active={activeTab === 'bills'} onClick={() => setActiveTab('bills')}>
-               <FileText size={18} /> Bills
-            </Tab>
-            <Tab active={activeTab === 'payments'} onClick={() => setActiveTab('payments')}>
-               <History size={18} /> Payments
-            </Tab>
-         </TabContainer>
-
-         {loading ? (
-            <LoadingOverlay>
-               <RefreshCw size={48} className="spinner" />
-               <p className="font-black uppercase tracking-[0.3em]">Synching with site telemetry...</p>
-            </LoadingOverlay>
-         ) : activeTab === 'overview' ? (
-            <div className="animate-in-fade">
-               <StatGrid>
-                  <StatCard color="#8b5cf6">
-                     <div className="icon-box"><DollarSign size={24} /></div>
-                     <div className="content">
-                        <h4>Total Billed</h4>
-                        <div className="value">KES {totalBilled.toLocaleString()}</div>
-                     </div>
-                  </StatCard>
-                  <StatCard color="#10b981">
-                     <div className="icon-box"><CheckCircle2 size={24} /></div>
-                     <div className="content">
-                        <h4>Total Received</h4>
-                        <div className="value">KES {totalPaid.toLocaleString()}</div>
-                     </div>
-                  </StatCard>
-                  <StatCard color="#f59e0b">
-                     <div className="icon-box"><AlertCircle size={24} /></div>
-                     <div className="content">
-                        <h4>Outstanding</h4>
-                        <div className="value">KES {totalBalance.toLocaleString()}</div>
-                     </div>
-                  </StatCard>
-                  <StatCard color="#3b82f6">
-                     <div className="icon-box"><PieChart size={24} /></div>
-                     <div className="content">
-                        <h4>Collection Rate</h4>
-                        <div className="value">{collectionRate}%</div>
-                     </div>
-                  </StatCard>
-               </StatGrid>
-
-               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                  <TableWrapper>
-                     <div className="p-6 border-b border-[var(--color-border)] font-bold text-xs uppercase tracking-widest text-slate-500">Recent Invoices</div>
-                     <StyledTable>
-                        <thead>
-                           <tr>
-                              <th>Month</th>
-                              <th>Amount</th>
-                              <th>Status</th>
-                           </tr>
-                        </thead>
-                        <tbody>
-                           {overviewData.bills.slice(0, 5).map((b, i) => (
-                              <tr key={i}>
-                                 <td>{b.bill_month}</td>
-                                 <td>KES {parseFloat(b.amount).toLocaleString()}</td>
-                                 <td><Badge type={b.status === 'paid' ? 'success' : 'warning'}>{b.status}</Badge></td>
-                              </tr>
-                           ))}
-                           {overviewData.bills.length === 0 && (
-                              <tr><td colSpan="3" className="py-20 text-center opacity-30 italic text-[10px] font-bold uppercase tracking-widest">No Invoice History</td></tr>
-                           )}
-                        </tbody>
-                     </StyledTable>
-                  </TableWrapper>
-
-                  <TableWrapper>
-                     <div className="p-6 border-b border-[var(--color-border)] font-bold text-xs uppercase tracking-widest text-slate-500">Recent Payments</div>
-                     <StyledTable>
-                        <thead>
-                           <tr>
-                              <th>Date</th>
-                              <th>Amount</th>
-                              <th>Ref</th>
-                           </tr>
-                        </thead>
-                        <tbody>
-                           {overviewData.payments.slice(0, 5).map((p, i) => (
-                              <tr key={i}>
-                                 <td>{p.payment_date}</td>
-                                 <td>KES {parseFloat(p.amount).toLocaleString()}</td>
-                                 <td className="font-mono text-[10px] text-slate-500">{p.transaction_reference || 'N/A'}</td>
-                              </tr>
-                           ))}
-                           {overviewData.payments.length === 0 && (
-                              <tr><td colSpan="3" className="py-20 text-center opacity-30 italic text-[10px] font-bold uppercase tracking-widest">No Payment Activity</td></tr>
-                           )}
-                        </tbody>
-                     </StyledTable>
-                  </TableWrapper>
-               </div>
-
-               <ChartWrapper>
-                  <div className="chart-header">
-                     <h3>Billing Performance Timeline</h3>
-                     <div className="flex items-center gap-3">
-                        <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Historical Volume</span>
-                        <Badge type="info">Monthly Overview</Badge>
+         <FlexContainer>
+            <SidebarComponent />
+            <MainContentArea>
+               <DetailHeader>
+                  <div className="flex items-center gap-6">
+                     <button className="back-btn" onClick={() => setSelectedBridge(null)}>
+                        <ChevronLeft size={18} /> Back to Hub
+                     </button>
+                     <div className="title-area">
+                        <h2>{selectedBridge.name}</h2>
+                        <p>Managing licence architecture for {selectedBridge.db_name}</p>
                      </div>
                   </div>
-                  <BarContainer>
-                     {chartBars.map(([mon, val]) => (
-                        <Bar key={mon} height={(val / Math.max(maxBar, 1) * 100)} label={`KES ${val.toLocaleString()}`} />
-                     ))}
-                     {chartBars.length === 0 && (
-                        <div className="flex-1 flex flex-col items-center justify-center text-slate-800 font-bold uppercase tracking-[0.3em] text-[10px] gap-4">
-                           <Layers size={32} className="opacity-10" />
-                           No historical billing data detected on bridge
+                  <div className="flex gap-3">
+                     <button className="back-btn" onClick={triggerRefresh}>
+                        <RefreshCw size={16} className={loading ? 'animate-spin' : ''} /> Refresh Stream
+                     </button>
+                  </div>
+               </DetailHeader>
+               <TabContainer>
+                  <Tab active={activeTab === 'overview'} onClick={() => setActiveTab('overview')}>
+                     <TrendingUp size={18} /> Overview
+                  </Tab>
+                  <Tab active={activeTab === 'plans'} onClick={() => setActiveTab('plans')}>
+                     <Layers size={18} /> Plans
+                  </Tab>
+                  <Tab active={activeTab === 'bills'} onClick={() => setActiveTab('bills')}>
+                     <FileText size={18} /> Bills
+                  </Tab>
+                  <Tab active={activeTab === 'payments'} onClick={() => setActiveTab('payments')}>
+                     <History size={18} /> Payments
+                  </Tab>
+               </TabContainer>
+
+               {loading ? (
+                  <div className="animate-in-fade space-y-8">
+                     <div className="flex gap-6">
+                         <Skeleton height="100px" radius="20px" />
+                         <Skeleton height="100px" radius="20px" />
+                         <Skeleton height="100px" radius="20px" />
+                         <Skeleton height="100px" radius="20px" />
+                     </div>
+                     <Skeleton height="300px" radius="24px" />
+                     <LoadingOverlay>
+                        <div className="loader-container">
+                           <div className="pulse-ring" />
+                           <RefreshCw size={40} className="spinner" />
                         </div>
-                     )}
-                  </BarContainer>
-                  <div className="flex gap-1.5xl">
-                     {chartBars.map(([mon]) => <div key={mon} className="flex-1 overflow-hidden"><BarLabel>{mon}</BarLabel></div>)}
+                        <div className="text-center">
+                           <p className="font-black uppercase tracking-[0.4em] text-xs text-white">Quantum Link Active</p>
+                           <p className="text-[10px] text-slate-500 uppercase tracking-widest mt-2 px-10">Synchronizing remote telemetry protocols and establishing site persistence hub...</p>
+                        </div>
+                     </LoadingOverlay>
                   </div>
-               </ChartWrapper>
-            </div>
-         ) : (
-            <TableWrapper className="animate-in-fade">
-                <div className="flex justify-between items-center p-6 border-b border-[var(--color-border)]">
-                   <div className="text-xs uppercase font-black text-slate-500 tracking-widest">{activeTab} Stream</div>
-                   {activeTab === 'plans' && (
-                        <button className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition-all" 
-                           onClick={() => {
-                              setModalData({ id: '', plan_name: '', description: '', amount: 0, currency: 'KES', billing_cycle: 'monthly', features: '', is_active: 1 });
-                              setShowModal(true);
-                           }}>
-                           <Plus size={14} /> Add Plan
-                        </button>
-                    )}
-                </div>
-               <StyledTable>
-                  <thead>
-                     <tr>
-                        {data.length > 0 ? Object.keys(data[0]).map(k => (
-                           <th key={k}>{k.replace(/_/g, ' ')}</th>
-                        )) : (
-                           <th>No records found in this module</th>
-                        )}
-                        <th style={{ textAlign: 'right' }}>Actions</th>
-                     </tr>
-                  </thead>
-                  <tbody>
-                     {data.map((row, i) => (
-                        <tr key={i}>
-                           {Object.entries(row).map(([key, val], j) => (
-                              <td key={j}>
-                                 {key === 'status' || key === 'is_active' ? (
-                                    <Badge type={
-                                       val === 'paid' || val === 1 || val === true || val === 'active' ? 'success' : 
-                                       val === 'pending' || val === 'partial' ? 'warning' : 'error'
-                                    }>
-                                       {val === 1 || val === true ? 'Active' : val === 0 || val === false ? 'Inactive' : val}
-                                    </Badge>
-                                 ) : (
-                                    val === null ? <span className="text-slate-600 italic">null</span> : val.toString()
+               ) : activeTab === 'overview' ? (
+                  <div className="animate-in-fade">
+                     <StatGrid>
+                        <StatCard color="#8b5cf6">
+                           <div className="icon-box"><DollarSign size={24} /></div>
+                           <div className="content">
+                              <h4>Total Billed</h4>
+                              <div className="value">KES {totalBilled.toLocaleString()}</div>
+                           </div>
+                        </StatCard>
+                        <StatCard color="#10b981">
+                           <div className="icon-box"><CheckCircle2 size={24} /></div>
+                           <div className="content">
+                              <h4>Total Received</h4>
+                              <div className="value">KES {totalPaid.toLocaleString()}</div>
+                           </div>
+                        </StatCard>
+                        <StatCard color="#f59e0b">
+                           <div className="icon-box"><AlertCircle size={24} /></div>
+                           <div className="content">
+                              <h4>Outstanding</h4>
+                              <div className="value">KES {totalBalance.toLocaleString()}</div>
+                           </div>
+                        </StatCard>
+                        <StatCard color="#3b82f6">
+                           <div className="icon-box"><PieChart size={24} /></div>
+                           <div className="content">
+                              <h4>Collection Rate</h4>
+                              <div className="value">{collectionRate}%</div>
+                           </div>
+                        </StatCard>
+                     </StatGrid>
+
+                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                        <TableWrapper>
+                           <div className="p-6 border-b border-[var(--color-border)] font-bold text-xs uppercase tracking-widest text-slate-500">Recent Invoices</div>
+                           <StyledTable>
+                              <thead>
+                                 <tr>
+                                    <th>Month</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 {overviewData.bills.slice(0, 5).map((b, i) => (
+                                    <tr key={i}>
+                                       <td>{b.bill_month}</td>
+                                       <td>KES {parseFloat(b.amount).toLocaleString()}</td>
+                                       <td><Badge type={b.status === 'paid' ? 'success' : 'warning'}>{b.status}</Badge></td>
+                                    </tr>
+                                 ))}
+                                 {overviewData.bills.length === 0 && (
+                                    <tr><td colSpan="3" className="py-20 text-center opacity-30 italic text-[10px] font-bold uppercase tracking-widest">No Invoice History</td></tr>
                                  )}
-                              </td>
-                           ))}
-                           <td>
-                              <div className="flex justify-end gap-3 px-4">
-                                 {activeTab === 'plans' && (
-                                    <button className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-all" 
-                                       onClick={() => {
-                                          setModalData(row);
-                                          setShowModal(true);
-                                       }}>
-                                       <Edit3 size={16} />
-                                    </button>
+                              </tbody>
+                           </StyledTable>
+                        </TableWrapper>
+
+                        <TableWrapper>
+                           <div className="p-6 border-b border-[var(--color-border)] font-bold text-xs uppercase tracking-widest text-slate-500">Recent Payments</div>
+                           <StyledTable>
+                              <thead>
+                                 <tr>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Ref</th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 {overviewData.payments.slice(0, 5).map((p, i) => (
+                                    <tr key={i}>
+                                       <td>{p.payment_date}</td>
+                                       <td>KES {parseFloat(p.amount).toLocaleString()}</td>
+                                       <td className="font-mono text-[10px] text-slate-500">{p.transaction_reference || 'N/A'}</td>
+                                    </tr>
+                                 ))}
+                                 {overviewData.payments.length === 0 && (
+                                    <tr><td colSpan="3" className="py-20 text-center opacity-30 italic text-[10px] font-bold uppercase tracking-widest">No Payment Activity</td></tr>
                                  )}
-                                 <button className="p-2 hover:bg-rose-500/10 rounded-lg text-slate-400 hover:text-rose-500 transition-all"
-                                    onClick={() => handleDelete(row.id)}>
-                                    <Trash2 size={16} />
-                                 </button>
+                              </tbody>
+                           </StyledTable>
+                        </TableWrapper>
+                     </div>
+
+                     <ChartWrapper>
+                        <div className="chart-header">
+                           <div>
+                              <h3>Billing & Revenue Performance</h3>
+                              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Full Annual Cycle • Jan - Dec</p>
+                           </div>
+                           <div className="flex items-center gap-6">
+                              <div className="w-[180px] mt-[-10px]">
+                                 <CustomDropdown 
+                                    options={availableYears.map(y => ({ value: y, label: `${y} Fiscal Year` }))}
+                                    value={selectedYear}
+                                    onChange={val => setSelectedYear(parseInt(val))}
+                                    placeholder="Select Year..."
+                                 />
                               </div>
-                           </td>
-                        </tr>
-                     ))}
-                  </tbody>
-               </StyledTable>
-            </TableWrapper>
-         )}
+                              <div className="flex items-center gap-2">
+                                 <div className="w-3 h-3 rounded-full bg-indigo-500" />
+                                 <span className="text-[10px] font-bold text-slate-500 uppercase">Total Billed</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                 <div className="w-3 h-3 rounded-full bg-emerald-500" />
+                                 <span className="text-[10px] font-bold text-slate-500 uppercase">Total Paid</span>
+                              </div>
+                           </div>
+                        </div>
+                        <BarContainer>
+                           <YAxis>
+                              {[1, 0.75, 0.5, 0.25, 0].map(p => (
+                                 <div key={p}>{(maxVal * p / 1000).toFixed(0)}K</div>
+                              ))}
+                           </YAxis>
+                           {aggregatedMonths.map(m => (
+                              <MonthGroup key={m.month}>
+                                 <Bar type="billed" height={(m.billed / maxVal * 100)} label={`Billed: KES ${m.billed.toLocaleString()}`} />
+                                 <Bar type="paid" height={(m.paid / maxVal * 100)} label={`Paid: KES ${m.paid.toLocaleString()}`} />
+                              </MonthGroup>
+                           ))}
+                        </BarContainer>
+                        <div className="flex gap-0 ml-[50px]">
+                           {monthLabels.map(m => <div key={m} className="flex-1 text-center"><BarLabel>{m}</BarLabel></div>)}
+                        </div>
+                     </ChartWrapper>
+                  </div>
+               ) : (
+                  <TableWrapper className="animate-in-fade">
+                      <div className="flex justify-between items-center p-6 border-b border-[var(--color-border)]">
+                         <div className="text-xs uppercase font-black text-slate-500 tracking-widest">{activeTab} Stream</div>
+                         {activeTab === 'plans' && (
+                              <button className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition-all" 
+                                 onClick={() => {
+                                    setModalData({ id: '', plan_name: '', description: '', amount: 0, currency: 'KES', billing_cycle: 'monthly', features: '', is_active: 1 });
+                                    setShowModal(true);
+                                 }}>
+                                 <Plus size={14} /> Add Plan
+                              </button>
+                          )}
+                      </div>
+                     <StyledTable>
+                        <thead>
+                           <tr>
+                              {data.length > 0 ? Object.keys(data[0]).map(k => (
+                                 <th key={k}>{k.replace(/_/g, ' ')}</th>
+                              )) : (
+                                 <th>No records found in this module</th>
+                              )}
+                              <th style={{ textAlign: 'right' }}>Actions</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           {data.map((row, i) => (
+                              <tr key={i}>
+                                 {Object.entries(row).map(([key, val], j) => (
+                                    <td key={j}>
+                                       {key === 'status' || key === 'is_active' ? (
+                                          <Badge type={
+                                             val === 'paid' || val === 1 || val === true || val === 'active' ? 'success' : 
+                                             val === 'pending' || val === 'partial' ? 'warning' : 'error'
+                                          }>
+                                             {val === 1 || val === true ? 'Active' : val === 0 || val === false ? 'Inactive' : val}
+                                          </Badge>
+                                       ) : (
+                                          val === null ? <span className="text-slate-600 italic">null</span> : val.toString()
+                                       )}
+                                    </td>
+                                 ))}
+                                 <td>
+                                    <div className="flex justify-end gap-3 px-4">
+                                       {activeTab === 'plans' && (
+                                          <button className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-all" 
+                                             onClick={() => {
+                                                setModalData(row);
+                                                setShowModal(true);
+                                             }}>
+                                             <Edit3 size={16} />
+                                          </button>
+                                       )}
+                                       <button className="p-2 hover:bg-rose-500/10 rounded-lg text-slate-400 hover:text-rose-500 transition-all"
+                                          onClick={() => handleDelete(row.id)}>
+                                          <Trash2 size={16} />
+                                       </button>
+                                    </div>
+                                 </td>
+                              </tr>
+                           ))}
+                        </tbody>
+                     </StyledTable>
+                  </TableWrapper>
+               )}
+            </MainContentArea>
+         </FlexContainer>
 
          {showModal && (
             <ModalOverlay onClick={() => setShowModal(false)}>
