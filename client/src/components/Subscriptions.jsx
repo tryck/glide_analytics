@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-import { 
-   CreditCard, 
-   FileText, 
-   History, 
-   ChevronLeft, 
-   Search, 
-   Filter, 
-   Download, 
-   CheckCircle2, 
-   AlertCircle, 
+import {
+   CreditCard,
+   FileText,
+   History,
+   ChevronLeft,
+   Search,
+   Filter,
+   Download,
+   CheckCircle2,
+   AlertCircle,
    Clock,
    ExternalLink,
    Server,
@@ -52,7 +52,7 @@ const SiteGrid = styled.div`
 const SiteCard = styled.div`
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
-  border-radius: 16px;
+  border-radius: var(--radius-sm);
   padding: 1.5rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -80,7 +80,7 @@ const SiteCard = styled.div`
   .icon-wrapper {
     width: 48px;
     height: 48px;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     background: var(--color-panel-strong);
     display: flex;
     align-items: center;
@@ -129,7 +129,7 @@ const DetailHeader = styled.div`
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     background: var(--color-panel-soft);
     border: 1px solid var(--color-border);
     color: var(--color-text-secondary);
@@ -201,7 +201,7 @@ const Tab = styled.button`
 const TableWrapper = styled.div`
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
-  border-radius: 20px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
   box-shadow: var(--color-shadow-card);
 `;
@@ -245,48 +245,48 @@ const StyledTable = styled.table`
 
 const Badge = styled.span`
   padding: 0.35rem 0.75rem;
-  border-radius: 20px;
+  border-radius: var(--radius-xl);
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   
   background: ${props => {
-    switch (props.type) {
-      case 'success': return 'rgba(16, 185, 129, 0.1)';
-      case 'warning': return 'rgba(245, 158, 11, 0.1)';
-      case 'error': return 'rgba(239, 68, 68, 0.1)';
-      case 'info': return 'rgba(59, 130, 246, 0.1)';
-      default: return 'var(--color-panel-strong)';
-    }
-  }};
+      switch (props.type) {
+         case 'success': return 'rgba(16, 185, 129, 0.1)';
+         case 'warning': return 'rgba(245, 158, 11, 0.1)';
+         case 'error': return 'rgba(239, 68, 68, 0.1)';
+         case 'info': return 'rgba(59, 130, 246, 0.1)';
+         default: return 'var(--color-panel-strong)';
+      }
+   }};
   
   color: ${props => {
-    switch (props.type) {
-      case 'success': return '#10b981';
-      case 'warning': return '#f59e0b';
-      case 'error': return '#ef4444';
-      case 'info': return '#3b82f6';
-      default: return 'var(--color-text-secondary)';
-    }
-  }};
+      switch (props.type) {
+         case 'success': return '#10b981';
+         case 'warning': return '#f59e0b';
+         case 'error': return '#ef4444';
+         case 'info': return '#3b82f6';
+         default: return 'var(--color-text-secondary)';
+      }
+   }};
 
   border: 1px solid ${props => {
-    switch (props.type) {
-      case 'success': return 'rgba(16, 185, 129, 0.2)';
-      case 'warning': return 'rgba(245, 158, 11, 0.2)';
-      case 'error': return 'rgba(239, 68, 68, 0.2)';
-      case 'info': return 'rgba(59, 130, 246, 0.2)';
-      default: return 'var(--color-border)';
-    }
-  }};
+      switch (props.type) {
+         case 'success': return 'rgba(16, 185, 129, 0.2)';
+         case 'warning': return 'rgba(245, 158, 11, 0.2)';
+         case 'error': return 'rgba(239, 68, 68, 0.2)';
+         case 'info': return 'rgba(59, 130, 246, 0.2)';
+         default: return 'var(--color-border)';
+      }
+   }};
 `;
 
 const Skeleton = styled.div`
   background: linear-gradient(90deg, var(--color-panel-soft) 25%, var(--color-panel-strong) 50%, var(--color-panel-soft) 75%);
   background-size: 200% 100%;
   animation: skeleton-loading 1.5s infinite linear;
-  border-radius: ${props => props.radius || '8px'};
+  border-radius: ${props => props.radius || 'var(--radius-sm)'};
   width: ${props => props.width || '100%'};
   height: ${props => props.height || '20px'};
 
@@ -306,7 +306,7 @@ const LoadingOverlay = styled.div`
   color: var(--color-text-muted);
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
-  border-radius: 32px;
+  border-radius: var(--radius-xl);
   backdrop-filter: blur(12px);
   margin-top: 2rem;
   box-shadow: 0 40px 100px -30px rgba(0,0,0,0.4);
@@ -362,12 +362,13 @@ const ModalOverlay = styled.div`
 const ModalContent = styled.div`
    background: var(--color-bg-card);
    border: 1px solid var(--color-border);
-   border-radius: 24px;
+   border-radius: var(--radius-sm);
    width: 100%;
    max-width: 600px;
    max-height: 90vh;
    overflow-y: auto;
-   padding: 2.5rem;
+   padding: 0.6rem   1.2rem;
+   padding-top: 0rem;
    position: relative;
    box-shadow: 0 50px 100px -20px rgba(0,0,0,0.5);
 
@@ -391,7 +392,7 @@ const StatGrid = styled.div`
 const StatCard = styled.div`
    background: var(--color-bg-card);
    border: 1px solid var(--color-border);
-   border-radius: 20px;
+   border-radius: var(--radius-sm);
    padding: 1.5rem;
    display: flex;
    align-items: center;
@@ -401,7 +402,7 @@ const StatCard = styled.div`
    .icon-box {
       width: 52px;
       height: 52px;
-      border-radius: 14px;
+      border-radius: var(--radius-md);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -431,7 +432,7 @@ const StatCard = styled.div`
 const ChartWrapper = styled.div`
    background: var(--color-bg-card);
    border: 1px solid var(--color-border);
-   border-radius: 24px;
+   border-radius: var(--radius-sm);
    padding: 2rem;
    margin-bottom: 2rem;
    
@@ -508,7 +509,7 @@ const Bar = styled.div`
          color: var(--color-text-strong);
          background: var(--color-bg-header);
          padding: 4px 8px;
-         border-radius: 4px;
+         border-radius: var(--radius-sm);
          white-space: nowrap;
          border: 1px solid var(--color-border);
          z-index: 10;
@@ -532,7 +533,7 @@ const FlexContainer = styled.div`
 `;
 
 const ClientSidebar = styled.div`
-  width: 280px;
+  width: 240px;
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: 0;
@@ -562,7 +563,7 @@ const ClientSidebar = styled.div`
      
      .client-item {
         padding: 0.85rem 1rem;
-        border-radius: 12px;
+        border-radius: var(--radius-sm);
         margin-bottom: 0.5rem;
         cursor: pointer;
         transition: all 0.2s;
@@ -582,7 +583,7 @@ const ClientSidebar = styled.div`
            background: var(--color-panel-strong);
            color: var(--color-text-muted);
            padding: 0.1rem 0.5rem;
-           border-radius: 6px;
+           border-radius: var(--radius-sm);
         }
 
         &.active {
@@ -601,21 +602,21 @@ const ClientSidebar = styled.div`
 const MainContentArea = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 2.5rem;
+  padding: 1.5rem;
   
   &::-webkit-scrollbar { width: 4px; }
   &::-webkit-scrollbar-track { background: transparent; }
   &::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 10px; }
 `;
 
-export default function Subscriptions({ 
-   bridges, products, clients, filterProduct, 
+export default function Subscriptions({
+   bridges, products, clients, filterProduct,
    selectedClientId, setSelectedClientId,
-   refreshToggle, setRefreshToggle 
+   refreshToggle, setRefreshToggle,
+   fiscalYear
 }) {
    const [selectedBridge, setSelectedBridge] = useState(null);
    const [activeTab, setActiveTab] = useState('overview'); // overview, plans, bills, payments
-   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
    const [data, setData] = useState([]);
    const [overviewData, setOverviewData] = useState({ bills: [], payments: [] });
    const [loading, setLoading] = useState(false);
@@ -625,8 +626,8 @@ export default function Subscriptions({
 
    // CRUD State
    const [showModal, setShowModal] = useState(false);
-   const [modalData, setModalData] = useState({ 
-      id: '', plan_name: '', description: '', amount: '', currency: 'KES', billing_cycle: 'monthly', features: '', is_active: 1 
+   const [modalData, setModalData] = useState({
+      id: '', plan_name: '', description: '', amount: '', currency: 'KES', billing_cycle: 'monthly', features: '', is_active: 1
    });
 
    useEffect(() => {
@@ -637,7 +638,7 @@ export default function Subscriptions({
             fetchTabData();
          }
       }
-   }, [selectedBridge, activeTab, refreshToggle]);
+   }, [selectedBridge, activeTab, refreshToggle, fiscalYear]);
 
    const getMapping = () => {
       const product = products.find(p => String(p.id) === String(selectedBridge?.product_id));
@@ -728,30 +729,30 @@ export default function Subscriptions({
       }
    };
 
-    const filteredSites = bridges.filter(s => {
-       const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          s.db_name?.toLowerCase().includes(searchQuery.toLowerCase());
-       
-       const matchesClient = !selectedClientId || String(s.client_id) === String(selectedClientId);
-       
-       if (filterProduct) {
-          return matchesSearch && matchesClient && String(s.product_id) === String(filterProduct.id);
-       }
-       return matchesSearch && matchesClient;
-    });
+   const filteredSites = bridges.filter(s => {
+      const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+         s.db_name?.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const filteredClients = Array.isArray(clients) ? clients.filter(c => {
-       if (!filterProduct) return true;
-       return bridges.some(b => String(b.client_id) === String(c.id) && String(b.product_id) === String(filterProduct.id));
-    }) : [];
+      const matchesClient = !selectedClientId || String(s.client_id) === String(selectedClientId);
+
+      if (filterProduct) {
+         return matchesSearch && matchesClient && String(s.product_id) === String(filterProduct.id);
+      }
+      return matchesSearch && matchesClient;
+   });
+
+   const filteredClients = Array.isArray(clients) ? clients.filter(c => {
+      if (!filterProduct) return true;
+      return bridges.some(b => String(b.client_id) === String(c.id) && String(b.product_id) === String(filterProduct.id));
+   }) : [];
 
    const countsByClient = Array.isArray(clients) ? clients.reduce((acc, c) => {
-       if (filterProduct) {
-          acc[c.id] = bridges.filter(b => String(b.client_id) === String(c.id) && String(b.product_id) === String(filterProduct.id)).length;
-       } else {
-          acc[c.id] = bridges.filter(b => String(b.client_id) === String(c.id)).length;
-       }
-       return acc;
+      if (filterProduct) {
+         acc[c.id] = bridges.filter(b => String(b.client_id) === String(c.id) && String(b.product_id) === String(filterProduct.id)).length;
+      } else {
+         acc[c.id] = bridges.filter(b => String(b.client_id) === String(c.id)).length;
+      }
+      return acc;
    }, {}) : {};
 
    // Calculations for Overview
@@ -769,11 +770,11 @@ export default function Subscriptions({
    const aggregatedMonths = monthLabels.map((m, idx) => {
       const billsInMonth = overviewData.bills.filter(b => {
          const d = new Date(b.created_at);
-         return (b.bill_month?.includes(m) || d.getMonth() === idx) && d.getFullYear() === selectedYear;
+         return (b.bill_month?.includes(m) || d.getMonth() === idx) && d.getFullYear() === fiscalYear;
       });
       const paymentsInMonth = overviewData.payments.filter(p => {
          const d = new Date(p.payment_date);
-         return d.getMonth() === idx && d.getFullYear() === selectedYear;
+         return d.getMonth() === idx && d.getFullYear() === fiscalYear;
       });
       return {
          month: m,
@@ -786,35 +787,35 @@ export default function Subscriptions({
 
    const SidebarComponent = () => (
       <ClientSidebar>
-         <div className="sidebar-header">
-            <h3>Client Registry</h3>
-         </div>
+         {/* <div className="sidebar-header">
+            <h1 className='text-xl font-bold text-white'>{filterProduct ? filterProduct.name : 'Client Registry'}</h1>
+         </div> */}
          <div className="sidebar-list">
-             <div className={`client-item ${!selectedClientId ? 'active' : ''}`} onClick={() => { setSelectedClientId(null); setSelectedBridge(null); }}>
-                <span className="client-name">Global View</span>
-                <span className="client-count">
-                   {filterProduct ? bridges.filter(b => String(b.product_id) === String(filterProduct.id)).length : bridges.length}
-                </span>
-             </div>
-             {filteredClients.map(c => (
-                <div key={c.id} className={`client-item ${selectedClientId === c.id ? 'active' : ''}`} onClick={() => { 
-                   setSelectedClientId(c.id); 
-                   // Find first matching site for this client
-                   const firstSite = bridges.find(b => 
-                      String(b.client_id) === String(c.id) && 
-                      (!filterProduct || String(b.product_id) === String(filterProduct.id))
-                   );
-                   if (firstSite) setSelectedBridge(firstSite);
-                   else setSelectedBridge(null); 
-                   triggerRefresh();
-                }}>
-                   <span className="client-name">{c.name}</span>
-                   <span className="client-count">{countsByClient[c.id] || 0}</span>
-                </div>
-             ))}
-             {filteredClients.length === 0 && filterProduct && (
-                <div className="py-10 text-center opacity-20 italic text-[10px]">No clients for this product</div>
-             )}
+            <div className={`client-item ${!selectedClientId ? 'active' : ''}`} onClick={() => { setSelectedClientId(null); setSelectedBridge(null); }}>
+               <span className="client-name">Global View</span>
+               <span className="client-count">
+                  {filterProduct ? bridges.filter(b => String(b.product_id) === String(filterProduct.id)).length : bridges.length}
+               </span>
+            </div>
+            {filteredClients.map(c => (
+               <div key={c.id} className={`client-item ${selectedClientId === c.id ? 'active' : ''}`} onClick={() => {
+                  setSelectedClientId(c.id);
+                  // Find first matching site for this client
+                  const firstSite = bridges.find(b =>
+                     String(b.client_id) === String(c.id) &&
+                     (!filterProduct || String(b.product_id) === String(filterProduct.id))
+                  );
+                  if (firstSite) setSelectedBridge(firstSite);
+                  else setSelectedBridge(null);
+                  triggerRefresh();
+               }}>
+                  <span className="client-name">{c.name}</span>
+                  <span className="client-count">{countsByClient[c.id] || 0}</span>
+               </div>
+            ))}
+            {filteredClients.length === 0 && filterProduct && (
+               <div className="py-10 text-center opacity-20 italic text-[10px]">No clients for this product</div>
+            )}
          </div>
       </ClientSidebar>
    );
@@ -830,24 +831,25 @@ export default function Subscriptions({
                         <h1 className="text-4xl font-black text-gradient uppercase tracking-tight">Licence Hub</h1>
                         <p className="text-slate-500 font-medium mt-2">Manage subscriptions and billing across your network</p>
                      </div>
-                      <div className="flex gap-4 items-center">
-                         {filterProduct && (
-                            <div className="flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 px-4 py-2 rounded-xl">
-                               <div className="w-2 h-2 rounded-full bg-indigo-500" />
-                               <span className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Filtering: {filterProduct.name}</span>
-                            </div>
-                         )}
-                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
-                            <input 
-                               type="text" 
-                               placeholder="Search sites..." 
-                               value={searchQuery}
-                               onChange={(e) => setSearchQuery(e.target.value)}
-                               className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-[var(--color-accent)] outline-none min-w-[280px] transition-all"
-                            />
-                         </div>
-                      </div>
+                     <div className="flex gap-4 items-center">
+                        {filterProduct && (
+                           <div className="flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 px-4 py-2" style={{ borderRadius: 'var(--radius-md)' }}>
+                              <div className="w-2 h-2 rounded-full bg-indigo-500" />
+                              <span className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Filtering: {filterProduct.name}</span>
+                           </div>
+                        )}
+                        <div className="relative">
+                           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
+                           <input
+                              type="text"
+                              placeholder="Search sites..."
+                              value={searchQuery}
+                              onChange={(e) => setSearchQuery(e.target.value)}
+                              className="bg-[var(--color-bg-card)] border border-[var(--color-border)] py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-[var(--color-accent)] outline-none min-w-[280px] transition-all"
+                              style={{ borderRadius: 'var(--radius-md)' }}
+                           />
+                        </div>
+                     </div>
                   </div>
 
                   <SiteGrid>
@@ -858,7 +860,7 @@ export default function Subscriptions({
                            </div>
                            <h3>{s.name}</h3>
                            <p>{s.db_name || 'Production Instance'}</p>
-                           
+
                            <div className="meta">
                               <span><Clock size={12} /> Last synced 2m ago</span>
                               <span><Badge type={s.status === 'Online' ? 'success' : 'error'}>{s.status}</Badge></span>
@@ -885,12 +887,12 @@ export default function Subscriptions({
             <MainContentArea>
                <DetailHeader>
                   <div className="flex items-center gap-6">
-                     <button className="back-btn" onClick={() => setSelectedBridge(null)}>
+                     {/* <button className="back-btn" onClick={() => setSelectedBridge(null)}>
                         <ChevronLeft size={18} /> Back to Hub
-                     </button>
-                     <div className="title-area">
-                        <h2>{selectedBridge.name}</h2>
-                        <p>Managing licence architecture for {selectedBridge.db_name}</p>
+                     </button> */}
+                     <div>
+                        <h1 className="text-4xl font-black text-gradient uppercase tracking-tight">{selectedBridge.name}</h1>
+                        <p className="text-slate-500 font-medium mt-2">Managing licence architecture for {selectedBridge.db_name}</p>
                      </div>
                   </div>
                   <div className="flex gap-3">
@@ -917,12 +919,12 @@ export default function Subscriptions({
                {loading ? (
                   <div className="animate-in-fade space-y-8">
                      <div className="flex gap-6">
-                         <Skeleton height="100px" radius="20px" />
-                         <Skeleton height="100px" radius="20px" />
-                         <Skeleton height="100px" radius="20px" />
-                         <Skeleton height="100px" radius="20px" />
+                        <Skeleton height="100px" radius="var(--radius-sm)" />
+                        <Skeleton height="100px" radius="var(--radius-sm)" />
+                        <Skeleton height="100px" radius="var(--radius-sm)" />
+                        <Skeleton height="100px" radius="var(--radius-sm)" />
                      </div>
-                     <Skeleton height="300px" radius="24px" />
+                     <Skeleton height="300px" radius="var(--radius-sm)" />
                      <LoadingOverlay>
                         <div className="loader-container">
                            <div className="pulse-ring" />
@@ -1026,14 +1028,6 @@ export default function Subscriptions({
                               <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Full Annual Cycle • Jan - Dec</p>
                            </div>
                            <div className="flex items-center gap-6">
-                              <div className="w-[180px] mt-[-10px]">
-                                 <CustomDropdown 
-                                    options={availableYears.map(y => ({ value: y, label: `${y} Fiscal Year` }))}
-                                    value={selectedYear}
-                                    onChange={val => setSelectedYear(parseInt(val))}
-                                    placeholder="Select Year..."
-                                 />
-                              </div>
                               <div className="flex items-center gap-2">
                                  <div className="w-3 h-3 rounded-full bg-indigo-500" />
                                  <span className="text-[10px] font-bold text-slate-500 uppercase">Total Billed</span>
@@ -1064,18 +1058,19 @@ export default function Subscriptions({
                   </div>
                ) : (
                   <TableWrapper className="animate-in-fade">
-                      <div className="flex justify-between items-center p-6 border-b border-[var(--color-border)]">
-                         <div className="text-xs uppercase font-black text-slate-500 tracking-widest">{activeTab} Stream</div>
-                         {activeTab === 'plans' && (
-                              <button className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition-all" 
-                                 onClick={() => {
-                                    setModalData({ id: '', plan_name: '', description: '', amount: 0, currency: 'KES', billing_cycle: 'monthly', features: '', is_active: 1 });
-                                    setShowModal(true);
-                                 }}>
-                                 <Plus size={14} /> Add Plan
-                              </button>
-                          )}
-                      </div>
+                     <div className="flex justify-between items-center p-6 border-b border-[var(--color-border)]">
+                        <div className="text-xs uppercase font-black text-slate-500 tracking-widest">{activeTab} Stream</div>
+                        {activeTab === 'plans' && (
+                           <button className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition-all"
+                              style={{ borderRadius: 'var(--radius-md)' }}
+                              onClick={() => {
+                                 setModalData({ id: '', plan_name: '', description: '', amount: 0, currency: 'KES', billing_cycle: 'monthly', features: '', is_active: 1 });
+                                 setShowModal(true);
+                              }}>
+                              <Plus size={14} /> Add Plan
+                           </button>
+                        )}
+                     </div>
                      <StyledTable>
                         <thead>
                            <tr>
@@ -1094,8 +1089,8 @@ export default function Subscriptions({
                                     <td key={j}>
                                        {key === 'status' || key === 'is_active' ? (
                                           <Badge type={
-                                             val === 'paid' || val === 1 || val === true || val === 'active' ? 'success' : 
-                                             val === 'pending' || val === 'partial' ? 'warning' : 'error'
+                                             val === 'paid' || val === 1 || val === true || val === 'active' ? 'success' :
+                                                val === 'pending' || val === 'partial' ? 'warning' : 'error'
                                           }>
                                              {val === 1 || val === true ? 'Active' : val === 0 || val === false ? 'Inactive' : val}
                                           </Badge>
@@ -1107,7 +1102,8 @@ export default function Subscriptions({
                                  <td>
                                     <div className="flex justify-end gap-3 px-4">
                                        {activeTab === 'plans' && (
-                                          <button className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-all" 
+                                          <button className="p-2 hover:bg-white/10 text-slate-400 hover:text-white transition-all"
+                                             style={{ borderRadius: 'var(--radius-sm)' }}
                                              onClick={() => {
                                                 setModalData(row);
                                                 setShowModal(true);
@@ -1115,7 +1111,8 @@ export default function Subscriptions({
                                              <Edit3 size={16} />
                                           </button>
                                        )}
-                                       <button className="p-2 hover:bg-rose-500/10 rounded-lg text-slate-400 hover:text-rose-500 transition-all"
+                                       <button className="p-2 hover:bg-rose-500/10 text-slate-400 hover:text-rose-500 transition-all"
+                                          style={{ borderRadius: 'var(--radius-sm)' }}
                                           onClick={() => handleDelete(row.id)}>
                                           <Trash2 size={16} />
                                        </button>
@@ -1142,34 +1139,44 @@ export default function Subscriptions({
                   <form onSubmit={handleSaveSubscription} className="space-y-6">
                      <div className="space-y-2">
                         <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Plan Name</label>
-                        <input required value={modalData.plan_name} onChange={e => setModalData({...modalData, plan_name: e.target.value})} 
-                           className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-4 text-xs outline-none focus:border-indigo-500/30 text-white" placeholder="e.g. Enterprise Tier" />
+                        <input required value={modalData.plan_name} onChange={e => setModalData({ ...modalData, plan_name: e.target.value })}
+                           className="w-full bg-black/40 border border-white/5 px-5 py-4 text-xs outline-none focus:border-indigo-500/30 text-white"
+                           style={{ borderRadius: 'var(--radius-sm)' }}
+                           placeholder="e.g. Enterprise Tier" />
                      </div>
 
                      <div className="space-y-2">
                         <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Description</label>
-                        <textarea rows="3" value={modalData.description} onChange={e => setModalData({...modalData, description: e.target.value})} 
-                           className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-4 text-xs outline-none focus:border-indigo-500/30 text-white" placeholder="Module scope and permissions..." />
+                        <textarea rows="3" value={modalData.description} onChange={e => setModalData({ ...modalData, description: e.target.value })}
+                           className="w-full bg-black/40 border border-white/5 px-5 py-4 text-xs outline-none focus:border-indigo-500/30 text-white"
+                           style={{ borderRadius: 'var(--radius-lg)' }}
+                           placeholder="Module scope and permissions..." />
                      </div>
 
                      <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-2">
                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Amount</label>
-                           <input type="number" required value={modalData.amount} onChange={e => setModalData({...modalData, amount: e.target.value})} 
-                              className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-4 text-xs outline-none focus:border-indigo-500/30 text-white" placeholder="5000" />
+                           <input type="number" required value={modalData.amount} onChange={e => setModalData({ ...modalData, amount: e.target.value })}
+                              className="w-full bg-black/40 border border-white/5 px-5 py-4 text-xs outline-none focus:border-indigo-500/30 text-white"
+                              style={{ borderRadius: 'var(--radius-lg)' }}
+                              placeholder="5000" />
                         </div>
                         <div className="space-y-2">
                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Currency</label>
-                           <input required value={modalData.currency} onChange={e => setModalData({...modalData, currency: e.target.value})} 
-                              className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-4 text-xs outline-none focus:border-indigo-500/30 text-white font-mono" placeholder="KES" />
+                           <input required value={modalData.currency} onChange={e => setModalData({ ...modalData, currency: e.target.value })}
+                              className="w-full bg-black/40 border border-white/5 px-5 py-4 text-xs outline-none focus:border-indigo-500/30 text-white font-mono"
+                              style={{ borderRadius: 'var(--radius-lg)' }}
+                              placeholder="KES" />
                         </div>
                      </div>
 
                      <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-2">
                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Billing Cycle</label>
-                           <select value={modalData.billing_cycle} onChange={e => setModalData({...modalData, billing_cycle: e.target.value})} 
-                              className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-4 text-xs outline-none focus:border-indigo-500/30 text-white appearance-none">
+                           <select value={modalData.billing_cycle} onChange={e => setModalData({ ...modalData, billing_cycle: e.target.value })}
+                              className="w-full bg-black/40 border border-white/5 px-5 py-4 text-xs outline-none focus:border-indigo-500/30 text-white appearance-none"
+                              style={{ borderRadius: 'var(--radius-lg)' }}
+                           >
                               <option value="monthly">Monthly</option>
                               <option value="yearly">Yearly</option>
                               <option value="lifetime">Lifetime</option>
@@ -1177,8 +1184,10 @@ export default function Subscriptions({
                         </div>
                         <div className="space-y-2">
                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Initial Status</label>
-                           <select value={modalData.is_active} onChange={e => setModalData({...modalData, is_active: parseInt(e.target.value)})} 
-                              className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-4 text-xs outline-none focus:border-indigo-500/30 text-white appearance-none">
+                           <select value={modalData.is_active} onChange={e => setModalData({ ...modalData, is_active: parseInt(e.target.value) })}
+                              className="w-full bg-black/40 border border-white/5 px-5 py-4 text-xs outline-none focus:border-indigo-500/30 text-white appearance-none"
+                              style={{ borderRadius: 'var(--radius-sm)' }}
+                           >
                               <option value={1}>Active</option>
                               <option value={0}>Inactive</option>
                            </select>
@@ -1187,13 +1196,15 @@ export default function Subscriptions({
 
                      <div className="space-y-2">
                         <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Features</label>
-                        <input value={modalData.features} onChange={e => setModalData({...modalData, features: e.target.value})} 
-                           className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-4 text-xs outline-none focus:border-indigo-500/30 text-white" placeholder="Full API Access..." />
+                        <input value={modalData.features} onChange={e => setModalData({ ...modalData, features: e.target.value })}
+                           className="w-full bg-black/40 border border-white/5 px-5 py-4 text-xs outline-none focus:border-indigo-500/30 text-white"
+                           style={{ borderRadius: 'var(--radius-lg)' }}
+                           placeholder="Full API Access..." />
                      </div>
 
                      <div className="pt-4 flex gap-4">
-                        <button type="button" onClick={() => setShowModal(false)} className="flex-1 bg-white/5 hover:bg-white/10 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all text-slate-400">Cancel</button>
-                        <button type="submit" className="flex-1 bg-indigo-600 hover:bg-indigo-500 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all shadow-xl shadow-indigo-600/30 text-white">Commit Changes</button>
+                        <button type="button" onClick={() => setShowModal(false)} className="flex-1 bg-white/5 hover:bg-white/10 py-4 text-[11px] font-black uppercase tracking-widest transition-all text-slate-400" style={{ borderRadius: 'var(--radius-lg)' }}>Cancel</button>
+                        <button type="submit" className="flex-1 bg-indigo-600 hover:bg-indigo-500 py-4 text-[11px] font-black uppercase tracking-widest transition-all shadow-xl shadow-indigo-600/30 text-white" style={{ borderRadius: 'var(--radius-lg)' }}>Commit Changes</button>
                      </div>
                   </form>
                </ModalContent>

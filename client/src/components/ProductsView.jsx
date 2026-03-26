@@ -18,7 +18,7 @@ const PageHeader = styled.div`
 
 const Container = styled.div`
   background-color: var(--color-bg-card);
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
   padding: 1.5rem;
   border: 1px solid var(--color-border);
 `;
@@ -60,7 +60,7 @@ const SearchBox = styled.div`
     border: 1px solid var(--color-input-border);
     color: var(--color-input-text);
     padding: 0.5rem 1rem 0.5rem 2.2rem;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     font-size: 0.85rem;
     outline: none;
     width: 220px;
@@ -81,7 +81,7 @@ const FilterBtn = styled.button`
   border: 1px solid var(--color-input-border);
   color: var(--color-input-text);
   padding: 0.5rem 1rem;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -98,7 +98,7 @@ const AddBtn = styled.button`
   border: none;
   color: var(--color-text-strong);
   padding: 0.5rem 1rem;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -180,7 +180,7 @@ const ProductIdentityCol = styled.div`
   .thumb {
     width: 44px;
     height: 32px;
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
     background: var(--color-input-bg);
     display: flex;
     align-items: center;
@@ -206,7 +206,7 @@ const ProductIdentityCol = styled.div`
 const Badge = styled.span`
   display: inline-flex;
   padding: 0.25rem 0.6rem;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 0.75rem;
   font-weight: 500;
   margin-right: 0.4rem;
@@ -222,7 +222,7 @@ const StatusBadge = styled.div`
   align-items: center;
   gap: 0.4rem;
   padding: 0.25rem 0.6rem;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   font-size: 0.75rem;
   font-weight: 500;
 
@@ -301,7 +301,7 @@ const ProductGrid = styled.div`
 const ProductCard = styled.div`
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
-  border-radius: 16px;
+  border-radius: var(--radius-sm);
   padding: 1.5rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -330,7 +330,7 @@ const ProductCard = styled.div`
   .icon-wrapper {
     width: 48px;
     height: 48px;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     background: var(--color-panel-strong);
     display: flex;
     align-items: center;
@@ -382,7 +382,7 @@ const ProductCard = styled.div`
   }
 `;
 
-export function ProductsView({ products, bridges, handleEditProduct }) {
+export function ProductsView({ products, bridges, handleEditProduct, handleAddProduct }) {
    const [selected, setSelected] = useState([]);
 
    const toggleOne = (e, id) => {
@@ -403,7 +403,7 @@ export function ProductsView({ products, bridges, handleEditProduct }) {
                   <BsSearch />
                   <input type="text" placeholder="Search registry..." />
                </SearchBox>
-               <AddBtn>
+               <AddBtn onClick={handleAddProduct}>
                   <BsPlus /> Init Artifact
                </AddBtn>
             </ActionsContainer>

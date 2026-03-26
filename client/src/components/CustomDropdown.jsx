@@ -28,7 +28,8 @@ export default function CustomDropdown({ options, value, onChange, placeholder, 
          {label && <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">{label}</label>}
          <div
             onClick={() => setIsOpen(!isOpen)}
-            className={`w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-4 text-xs flex items-center justify-between cursor-pointer transition-all hover:bg-white/[0.03] ${isOpen ? 'border-indigo-500/30 ring-1 ring-indigo-500/10' : ''}`}
+            className={`w-full bg-black/40 border border-white/5 px-5 py-4 text-xs flex items-center justify-between cursor-pointer transition-all hover:bg-white/[0.03] ${isOpen ? 'border-indigo-500/30 ring-1 ring-indigo-500/10' : ''}`}
+            style={{ borderRadius: 'var(--radius-md)' }}
          >
             <span className={selectedOption ? 'text-white font-medium' : 'text-slate-500'}>
                {selectedOption ? selectedOption.label : placeholder}
@@ -37,7 +38,7 @@ export default function CustomDropdown({ options, value, onChange, placeholder, 
          </div>
 
          {isOpen && (
-            <div className="absolute top-full left-0 right-0 mt-2 bg-[#1a1a1e]/95 border border-white/10 rounded-2xl overflow-hidden z-[200] shadow-[0_20px_50px_rgba(0,0,0,0.5)] animate-in-fade backdrop-blur-3xl">
+            <div className="absolute top-full left-0 right-0 mt-2 bg-[#1a1a1e]/95 border border-white/10 overflow-hidden z-[200] shadow-[0_20px_50px_rgba(0,0,0,0.5)] animate-in-fade backdrop-blur-3xl" style={{ borderRadius: 'var(--radius-lg)' }}>
                {options.length > 5 && (
                   <div className="p-3 border-b border-white/5 bg-white/[0.02]">
                      <div className="relative">
@@ -46,7 +47,8 @@ export default function CustomDropdown({ options, value, onChange, placeholder, 
                            autoFocus
                            value={searchTerm}
                            onChange={e => setSearchTerm(e.target.value)}
-                           className="w-full bg-black/20 border border-white/5 rounded-xl pl-9 pr-4 py-2 text-[11px] outline-none focus:border-indigo-500/30 transition-all font-medium"
+                           className="w-full bg-black/20 border border-white/5 pl-9 pr-4 py-2 text-[11px] outline-none focus:border-indigo-500/30 transition-all font-medium"
+                           style={{ borderRadius: 'var(--radius-sm)' }}
                            placeholder="Filter options..."
                            onClick={e => e.stopPropagation()}
                         />
@@ -62,7 +64,8 @@ export default function CustomDropdown({ options, value, onChange, placeholder, 
                            onChange(opt.value);
                            setIsOpen(false);
                         }}
-                        className={`px-4 py-2.5 rounded-xl text-xs font-medium cursor-pointer transition-all flex items-center justify-between group ${String(opt.value) === String(value) ? 'bg-indigo-600/10 text-indigo-400' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}
+                        className={`px-4 py-2.5 text-xs font-medium cursor-pointer transition-all flex items-center justify-between group ${String(opt.value) === String(value) ? 'bg-indigo-600/10 text-indigo-400' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}
+                        style={{ borderRadius: 'var(--radius-sm)' }}
                      >
                         <span>{opt.label}</span>
                         {String(opt.value) === String(value) && <div className="w-1 h-1 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,1)]" />}

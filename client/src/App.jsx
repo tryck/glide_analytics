@@ -47,6 +47,7 @@ function App() {
    const [subscriptionFilterProduct, setSubscriptionFilterProduct] = useState(null);
    const [selectedClientId, setSelectedClientId] = useState(null);
    const [refreshToggle, setRefreshToggle] = useState(0);
+   const [fiscalYear, setFiscalYear] = useState(new Date().getFullYear());
 
    // Global Auth Config
    axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
@@ -136,6 +137,16 @@ function App() {
    const handleEditProduct = async (prod) => {
       setSelectedProduct(prod);
       setSelectedTableIdx(null);
+   };
+
+   const handleAddProduct = async () => {
+      try {
+         const res = await axios.post(`${API_BASE}/products`, { name: 'New Shell Product', description: 'Core system module with default logical mappings.', field_mapping: { tables: [] } });
+         await fetchData();
+         const resAll = await axios.get(`${API_BASE}/products`);
+         const newProd = resAll.data.find(p => p.id === res.data.id);
+         if (newProd) handleEditProduct(newProd);
+      } catch (e) { alert("Deployment Failed: " + (e.response?.data?.error || e.message)); }
    };
 
    const handleSaveBridge = async (e) => {
@@ -234,10 +245,15 @@ function App() {
       },
    };
 
-   const headerMeta = headerMetaByView[view] || {
-      title: formatViewLabel(view),
-      subtitle: 'Manage this section from the control panel',
-   };
+   const headerMeta = (view === 'subscriptions' && subscriptionFilterProduct)
+      ? {
+         title: subscriptionFilterProduct.name,
+         subtitle: `Administrative monitoring and billing activity for ${subscriptionFilterProduct.name}`,
+      }
+      : headerMetaByView[view] || {
+         title: formatViewLabel(view),
+         subtitle: 'Manage this section from the control panel',
+      };
 
    if (!isAuthenticated) return <Login API_BASE={API_BASE} onLogin={(tok) => {
       localStorage.setItem('token', tok);
@@ -247,7 +263,7 @@ function App() {
 
    const renderContent = () => {
       switch (view) {
-         case 'dashboard': return <Dashboard bridges={bridges} />;
+         case 'dashboard': return <Dashboard bridges={bridges} products={products} />;
          case 'handshakes': return <NodesView
             bridges={bridges}
             products={products}
@@ -263,6 +279,7 @@ function App() {
             products={products}
             bridges={bridges}
             handleEditProduct={handleEditProduct}
+            handleAddProduct={handleAddProduct}
          />;
          case 'clients': return <ClientsView
             clients={clients}
@@ -280,6 +297,7 @@ function App() {
             setSelectedClientId={setSelectedClientId}
             refreshToggle={refreshToggle}
             setRefreshToggle={setRefreshToggle}
+            fiscalYear={fiscalYear}
          />;
          case 'posts': return <TableView1 />;
          case 'admin-posts': return <AdminPosts />;
@@ -287,7 +305,7 @@ function App() {
             if (['pages', 'comments', 'appearance', 'plugins', 'users', 'settings'].includes(view)) {
                return <GenericView view={view} />;
             }
-            return <Dashboard bridges={bridges} />;
+            return <Dashboard bridges={bridges} products={products} />;
       }
    };
 
@@ -314,13 +332,16 @@ function App() {
             setSelectedClientId={setSelectedClientId}
             setRefreshToggle={setRefreshToggle}
          />
-         <div className="flex-1 ml-[260px] relative font-['Lexend']">
+         <div className="flex-1 ml-[230px] relative font-['Lexend']">
             <Header
                fetchData={fetchData}
+               setRefreshToggle={setRefreshToggle}
                theme={theme}
                onToggleTheme={toggleTheme}
                title={headerMeta.title}
                subtitle={headerMeta.subtitle}
+               fiscalYear={fiscalYear}
+               setFiscalYear={setFiscalYear}
             />
 
             {renderContent()}

@@ -70,15 +70,27 @@ app.get('/api/products', async (req, res) => {
 });
 
 app.put('/api/products/:id', async (req, res) => {
-    const { field_mapping, description } = req.body;
+    const { field_mapping, description, name } = req.body;
     try {
         await pool.execute(
-            'UPDATE products SET field_mapping = ?, description = ? WHERE id = ?',
-            [JSON.stringify(field_mapping || {}), description || '', req.params.id]
+            'UPDATE products SET name = ?, field_mapping = ?, description = ? WHERE id = ?',
+            [name || '', JSON.stringify(field_mapping || {}), description || '', req.params.id]
         );
         res.json({ success: true });
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
+
+app.post('/api/products', async (req, res) => {
+    const { name, description, field_mapping } = req.body;
+    try {
+        const [result] = await pool.execute(
+            'INSERT INTO products (name, description, field_mapping) VALUES (?, ?, ?)',
+            [name || 'New Product', description || '', JSON.stringify(field_mapping || { tables: [] })]
+        );
+        res.json({ id: result.insertId, ...req.body });
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 
 // Client Product Bridges (System Bridges)
 app.get('/api/client-products', async (req, res) => {

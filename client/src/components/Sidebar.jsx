@@ -57,7 +57,7 @@ export default function Sidebar({
             { id: 'clients', label: 'Clients', icon: Briefcase, count: Array.isArray(clients) ? clients.length : 0 },
             { id: 'products', label: 'Products', icon: Boxes, count: Array.isArray(products) ? products.length : 0 },
 
-            { id: 'handshakes', label: 'Sites', icon: MapPin, count: Array.isArray(bridges) ? bridges.length : 0 },
+            // { id: 'handshakes', label: 'Sites', icon: MapPin, count: Array.isArray(bridges) ? bridges.length : 0 },
          ]
       },
       {
@@ -83,7 +83,7 @@ export default function Sidebar({
    };
 
    return (
-      <aside className="w-[260px] bg-[var(--color-bg-sidebar)] border-r border-[var(--color-border)] h-screen flex flex-col fixed left-0 top-0 z-50 font-['Lexend'] overflow-hidden ">
+      <aside className="w-[230px] bg-[var(--color-bg-sidebar)] border-r border-[var(--color-border)] h-screen flex flex-col fixed left-0 top-0 z-50 font-['Lexend'] overflow-hidden ">
          <div className="h-[60px] px-5 border-b border-[var(--color-border)] flex items-center">
             <div className="w-full cursor-pointer transition-all" onClick={() => handleNavigate('dashboard')}>
                <div className="flex items-center gap-2.5">
@@ -111,12 +111,12 @@ export default function Sidebar({
                               </div>
                               <div className="flex items-center gap-2">
                                  {i.count !== undefined && (
-                                    <span className="text-[10px] font-bold bg-white/5 text-slate-500 px-1.5 py-0.5 rounded-md group-hover:bg-white/10 transition-colors">
+                                    <span className="text-[10px] font-bold bg-white/5 text-slate-500 px-1.5 py-0.5 group-hover:bg-white/10 transition-colors" style={{ borderRadius: 'var(--radius-sm)' }}>
                                        {i.count}
                                     </span>
                                  )}
                                  {i.hasSubmenu && (
-                                    <div className="p-1 hover:bg-white/5 rounded-md transition-all" onClick={i.onToggle}>
+                                    <div className="p-1 hover:bg-white/5 transition-all" style={{ borderRadius: 'var(--radius-sm)' }} onClick={i.onToggle}>
                                        {i.isOpen ? <ChevronDown size={14} className="text-slate-500" /> : <ChevronRight size={14} className="text-slate-500" />}
                                     </div>
                                  )}
@@ -135,7 +135,7 @@ export default function Sidebar({
                                        >
                                           <span>{toCamelCase(prod.name)}</span>
                                           {count > 0 && (
-                                             <span className={`text-[9px] px-1.5 py-0.5 rounded-md font-black tabular-nums transition-all ${subscriptionFilterProduct?.id === prod.id ? 'bg-indigo-500/20 text-indigo-400' : 'bg-white/5 text-slate-700'}`}>
+                                             <span className={`text-[9px] px-1.5 py-0.5 font-black tabular-nums transition-all ${subscriptionFilterProduct?.id === prod.id ? 'bg-indigo-500/20 text-indigo-400' : 'bg-white/5 text-slate-700'}`} style={{ borderRadius: 'var(--radius-sm)' }}>
                                                 {count}
                                              </span>
                                           )}
@@ -154,8 +154,8 @@ export default function Sidebar({
             ))}
          </div>
 
-         <div onClick={onLogout} className="mt-auto mx-4 mb-4 px-4 py-3 border border-[var(--color-border)] rounded-xl flex items-center gap-3 cursor-pointer hover:bg-[var(--color-sidebar-hover)] hover:border-[var(--color-border-glow)] transition-all bg-[var(--color-panel-soft)]">
-            <div className="w-9 h-9 rounded-lg bg-[var(--color-accent)] text-white font-bold text-sm shadow-sm flex items-center justify-center">RA</div>
+         <div onClick={onLogout} className="mt-auto mx-4 mb-4 px-4 py-3 border border-[var(--color-border)] flex items-center gap-3 cursor-pointer hover:bg-[var(--color-sidebar-hover)] hover:border-[var(--color-border-glow)] transition-all bg-[var(--color-panel-soft)]" style={{ borderRadius: 'var(--radius-sm)' }}>
+            <div className="w-9 h-9 bg-[var(--color-accent)] text-white font-bold text-sm shadow-sm flex items-center justify-center" style={{ borderRadius: 'var(--radius-sm)' }}>RA</div>
             <div className="flex flex-col flex-1 truncate">
                <span className="text-[12px] font-semibold text-[var(--color-text-primary)] leading-none">Root Admin</span>
                <span className="text-[10px] text-[var(--color-text-muted)] font-normal truncate">admin@digitalglide.io</span>
