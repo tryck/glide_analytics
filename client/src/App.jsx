@@ -48,6 +48,7 @@ function App() {
    const [selectedClientId, setSelectedClientId] = useState(null);
    const [refreshToggle, setRefreshToggle] = useState(0);
    const [fiscalYear, setFiscalYear] = useState(new Date().getFullYear());
+   const [viewMode, setViewMode] = useState('table');
 
    // Global Auth Config
    axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
@@ -176,6 +177,15 @@ function App() {
          fetchData();
       }
    };
+ 
+   const deleteClient = async (id) => {
+      if (confirm("Delete Client? This might affect existing sites.")) {
+         try {
+            await axios.delete(`${API_BASE}/clients/${id}`);
+            fetchData();
+         } catch (e) { alert("Delete Failed"); }
+      }
+   };
 
    const toggleTheme = () => {
       setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
@@ -286,6 +296,8 @@ function App() {
             bridges={bridges}
             setShowClientModal={setShowClientModal}
             setClientForm={setClientForm}
+            onDeleteClient={deleteClient}
+            viewMode={viewMode}
          />;
          case 'media': return <MediaView />;
          case 'subscriptions': return <Subscriptions 
@@ -298,6 +310,7 @@ function App() {
             refreshToggle={refreshToggle}
             setRefreshToggle={setRefreshToggle}
             fiscalYear={fiscalYear}
+            viewMode={viewMode}
          />;
          case 'posts': return <TableView1 />;
          case 'admin-posts': return <AdminPosts />;
@@ -342,6 +355,8 @@ function App() {
                subtitle={headerMeta.subtitle}
                fiscalYear={fiscalYear}
                setFiscalYear={setFiscalYear}
+               viewMode={viewMode}
+               setViewMode={setViewMode}
             />
 
             {renderContent()}

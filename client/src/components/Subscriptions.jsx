@@ -28,6 +28,9 @@ import {
    ChevronDown
 } from 'lucide-react';
 import CustomDropdown from './CustomDropdown';
+import ClientRegistrySidebar from './ClientRegistrySidebar';
+import DataTable, { Badge as SharedBadge } from './DataTable';
+
 
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
    ? 'http://localhost:3001/api'
@@ -198,89 +201,7 @@ const Tab = styled.button`
   gap: 0.5rem;
 `;
 
-const TableWrapper = styled.div`
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  box-shadow: var(--color-shadow-card);
-`;
 
-const StyledTable = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-
-  thead {
-    background: var(--color-panel-soft);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  th {
-    padding: 1.25rem;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-text-secondary);
-  }
-
-  td {
-    padding: 1.25rem;
-    font-size: 0.875rem;
-    color: var(--color-text-primary);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  tbody tr {
-    transition: all 0.2s;
-    &:hover {
-      background: var(--color-panel-soft);
-    }
-    &:last-child td {
-      border-bottom: none;
-    }
-  }
-`;
-
-const Badge = styled.span`
-  padding: 0.35rem 0.75rem;
-  border-radius: var(--radius-xl);
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  
-  background: ${props => {
-      switch (props.type) {
-         case 'success': return 'rgba(16, 185, 129, 0.1)';
-         case 'warning': return 'rgba(245, 158, 11, 0.1)';
-         case 'error': return 'rgba(239, 68, 68, 0.1)';
-         case 'info': return 'rgba(59, 130, 246, 0.1)';
-         default: return 'var(--color-panel-strong)';
-      }
-   }};
-  
-  color: ${props => {
-      switch (props.type) {
-         case 'success': return '#10b981';
-         case 'warning': return '#f59e0b';
-         case 'error': return '#ef4444';
-         case 'info': return '#3b82f6';
-         default: return 'var(--color-text-secondary)';
-      }
-   }};
-
-  border: 1px solid ${props => {
-      switch (props.type) {
-         case 'success': return 'rgba(16, 185, 129, 0.2)';
-         case 'warning': return 'rgba(245, 158, 11, 0.2)';
-         case 'error': return 'rgba(239, 68, 68, 0.2)';
-         case 'info': return 'rgba(59, 130, 246, 0.2)';
-         default: return 'var(--color-border)';
-      }
-   }};
-`;
 
 const Skeleton = styled.div`
   background: linear-gradient(90deg, var(--color-panel-soft) 25%, var(--color-panel-strong) 50%, var(--color-panel-soft) 75%);
@@ -416,7 +337,7 @@ const StatCard = styled.div`
          font-size: 0.75rem;
          font-weight: 700;
          color: var(--color-text-secondary);
-         text-transform: uppercase;
+         color: var(--color-text-secondary);
          letter-spacing: 0.1em;
          margin-bottom: 0.25rem;
       }
@@ -522,7 +443,7 @@ const BarLabel = styled.div`
    font-size: 0.65rem;
    font-weight: 700;
    color: var(--color-text-muted);
-   text-transform: uppercase;
+   color: var(--color-text-muted);
    letter-spacing: 0.05em;
    margin-top: 0.75rem;
 `;
@@ -532,72 +453,6 @@ const FlexContainer = styled.div`
   height: 100%;
 `;
 
-const ClientSidebar = styled.div`
-  width: 240px;
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: 0;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  box-shadow: none;
-  height: 100%;
-  
-  .sidebar-header {
-     padding: 1.5rem;
-     border-bottom: 1px solid var(--color-border);
-     background: var(--color-panel-soft);
-     h3 {
-        font-size: 0.75rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: var(--color-text-secondary);
-     }
-  }
-
-  .sidebar-list {
-     flex: 1;
-     overflow-y: auto;
-     padding: 1rem;
-     
-     .client-item {
-        padding: 0.85rem 1rem;
-        border-radius: var(--radius-sm);
-        margin-bottom: 0.5rem;
-        cursor: pointer;
-        transition: all 0.2s;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        
-        .client-name {
-           font-size: 0.8rem;
-           font-weight: 700;
-           color: var(--color-text-primary);
-        }
-        
-        .client-count {
-           font-size: 0.7rem;
-           font-weight: 800;
-           background: var(--color-panel-strong);
-           color: var(--color-text-muted);
-           padding: 0.1rem 0.5rem;
-           border-radius: var(--radius-sm);
-        }
-
-        &.active {
-           background: var(--color-accent);
-           .client-name { color: white; }
-           .client-count { background: rgba(255,255,255,0.2); color: white; }
-        }
-
-        &:hover:not(.active) {
-           background: var(--color-panel-soft);
-        }
-     }
-  }
-`;
 
 const MainContentArea = styled.div`
   flex: 1;
@@ -785,57 +640,50 @@ export default function Subscriptions({
 
    const maxVal = Math.max(...aggregatedMonths.map(m => Math.max(m.billed, m.paid)), 100);
 
-   const SidebarComponent = () => (
-      <ClientSidebar>
-         {/* <div className="sidebar-header">
-            <h1 className='text-xl font-bold text-white'>{filterProduct ? filterProduct.name : 'Client Registry'}</h1>
-         </div> */}
-         <div className="sidebar-list">
-            <div className={`client-item ${!selectedClientId ? 'active' : ''}`} onClick={() => { setSelectedClientId(null); setSelectedBridge(null); }}>
-               <span className="client-name">Global View</span>
-               <span className="client-count">
-                  {filterProduct ? bridges.filter(b => String(b.product_id) === String(filterProduct.id)).length : bridges.length}
-               </span>
-            </div>
-            {filteredClients.map(c => (
-               <div key={c.id} className={`client-item ${selectedClientId === c.id ? 'active' : ''}`} onClick={() => {
-                  setSelectedClientId(c.id);
-                  // Find first matching site for this client
-                  const firstSite = bridges.find(b =>
-                     String(b.client_id) === String(c.id) &&
-                     (!filterProduct || String(b.product_id) === String(filterProduct.id))
-                  );
-                  if (firstSite) setSelectedBridge(firstSite);
-                  else setSelectedBridge(null);
-                  triggerRefresh();
-               }}>
-                  <span className="client-name">{c.name}</span>
-                  <span className="client-count">{countsByClient[c.id] || 0}</span>
-               </div>
-            ))}
-            {filteredClients.length === 0 && filterProduct && (
-               <div className="py-10 text-center opacity-20 italic text-[10px]">No clients for this product</div>
-            )}
-         </div>
-      </ClientSidebar>
+
+   const [textSearch, setTextSearch] = useState('');
+
+   const filteredData = data.filter(row =>
+      Object.values(row).some(val =>
+         val !== null && val.toString().toLowerCase().includes(textSearch.toLowerCase())
+      )
    );
+
+   const getBadgeColor = (type) => {
+      switch (type) {
+         case 'success': return '#10b981';
+         case 'warning': return '#f59e0b';
+         case 'error': return '#ef4444';
+         case 'info': return '#3b82f6';
+         default: return '#64748b';
+      }
+   };
 
    if (!selectedBridge) {
       return (
          <Container>
             <FlexContainer>
-               <SidebarComponent />
+               <ClientRegistrySidebar
+                  clients={filteredClients}
+                  bridges={bridges}
+                  selectedClientId={selectedClientId}
+                  setSelectedClientId={setSelectedClientId}
+                  setSelectedBridge={setSelectedBridge}
+                  filterProduct={filterProduct}
+                  countsByClient={countsByClient}
+                  triggerRefresh={triggerRefresh}
+               />
                <MainContentArea>
                   <div className="flex justify-between items-end mb-8">
                      <div>
-                        <h1 className="text-4xl font-black text-gradient uppercase tracking-tight">Licence Hub</h1>
+                        <h1 className="text-4xl font-black text-gradient tracking-tight">Licence Hub</h1>
                         <p className="text-slate-500 font-medium mt-2">Manage subscriptions and billing across your network</p>
                      </div>
                      <div className="flex gap-4 items-center">
                         {filterProduct && (
                            <div className="flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 px-4 py-2" style={{ borderRadius: 'var(--radius-md)' }}>
                               <div className="w-2 h-2 rounded-full bg-indigo-500" />
-                              <span className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Filtering: {filterProduct.name}</span>
+                              <span className="text-[10px] font-black tracking-widest text-indigo-400">Filtering: {filterProduct.name}</span>
                            </div>
                         )}
                         <div className="relative">
@@ -846,7 +694,7 @@ export default function Subscriptions({
                               value={searchQuery}
                               onChange={(e) => setSearchQuery(e.target.value)}
                               className="bg-[var(--color-bg-card)] border border-[var(--color-border)] py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-[var(--color-accent)] outline-none min-w-[280px] transition-all"
-                              style={{ borderRadius: 'var(--radius-md)' }}
+                              style={{ borderRadius: 'var(--radius-sm)' }}
                            />
                         </div>
                      </div>
@@ -863,7 +711,7 @@ export default function Subscriptions({
 
                            <div className="meta">
                               <span><Clock size={12} /> Last synced 2m ago</span>
-                              <span><Badge type={s.status === 'Online' ? 'success' : 'error'}>{s.status}</Badge></span>
+                              <span><SharedBadge color={s.status === 'Online' ? '#10b981' : '#ef4444'}>{s.status}</SharedBadge></span>
                            </div>
                         </SiteCard>
                      ))}
@@ -871,7 +719,7 @@ export default function Subscriptions({
                   {filteredSites.length === 0 && (
                      <div className="py-24 text-center opacity-30">
                         <Search size={48} className="mx-auto mb-4 text-slate-800" />
-                        <p className="text-xl font-black uppercase tracking-[0.4em]">No matching sites</p>
+                        <p className="text-xl font-black tracking-[0.4em]">No matching sites</p>
                      </div>
                   )}
                </MainContentArea>
@@ -883,7 +731,16 @@ export default function Subscriptions({
    return (
       <Container>
          <FlexContainer>
-            <SidebarComponent />
+            <ClientRegistrySidebar
+               clients={filteredClients}
+               bridges={bridges}
+               selectedClientId={selectedClientId}
+               setSelectedClientId={setSelectedClientId}
+               setSelectedBridge={setSelectedBridge}
+               filterProduct={filterProduct}
+               countsByClient={countsByClient}
+               triggerRefresh={triggerRefresh}
+            />
             <MainContentArea>
                <DetailHeader>
                   <div className="flex items-center gap-6">
@@ -891,12 +748,12 @@ export default function Subscriptions({
                         <ChevronLeft size={18} /> Back to Hub
                      </button> */}
                      <div>
-                        <h1 className="text-4xl font-black text-gradient uppercase tracking-tight">{selectedBridge.name}</h1>
+                        <h1 className="text-4xl font-black text-gradient tracking-tight">{selectedBridge.client_name}</h1>
                         <p className="text-slate-500 font-medium mt-2">Managing licence architecture for {selectedBridge.db_name}</p>
                      </div>
                   </div>
                   <div className="flex gap-3">
-                     <button className="back-btn" onClick={triggerRefresh}>
+                     <button className="back-btn" onClick={triggerRefresh} style={{ borderRadius: 'var(--radius-sm)' }}>
                         <RefreshCw size={16} className={loading ? 'animate-spin' : ''} /> Refresh Stream
                      </button>
                   </div>
@@ -931,8 +788,8 @@ export default function Subscriptions({
                            <RefreshCw size={40} className="spinner" />
                         </div>
                         <div className="text-center">
-                           <p className="font-black uppercase tracking-[0.4em] text-xs text-white">Quantum Link Active</p>
-                           <p className="text-[10px] text-slate-500 uppercase tracking-widest mt-2 px-10">Synchronizing remote telemetry protocols and establishing site persistence hub...</p>
+                           <p className="font-black tracking-[0.4em] text-xs text-white">Quantum Link Active</p>
+                           <p className="text-[10px] text-slate-500 tracking-widest mt-2 px-10">Synchronizing remote telemetry protocols and establishing site persistence hub...</p>
                         </div>
                      </LoadingOverlay>
                   </div>
@@ -969,72 +826,21 @@ export default function Subscriptions({
                         </StatCard>
                      </StatGrid>
 
-                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                        <TableWrapper>
-                           <div className="p-6 border-b border-[var(--color-border)] font-bold text-xs uppercase tracking-widest text-slate-500">Recent Invoices</div>
-                           <StyledTable>
-                              <thead>
-                                 <tr>
-                                    <th>Month</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
-                                 </tr>
-                              </thead>
-                              <tbody>
-                                 {overviewData.bills.slice(0, 5).map((b, i) => (
-                                    <tr key={i}>
-                                       <td>{b.bill_month}</td>
-                                       <td>KES {parseFloat(b.amount).toLocaleString()}</td>
-                                       <td><Badge type={b.status === 'paid' ? 'success' : 'warning'}>{b.status}</Badge></td>
-                                    </tr>
-                                 ))}
-                                 {overviewData.bills.length === 0 && (
-                                    <tr><td colSpan="3" className="py-20 text-center opacity-30 italic text-[10px] font-bold uppercase tracking-widest">No Invoice History</td></tr>
-                                 )}
-                              </tbody>
-                           </StyledTable>
-                        </TableWrapper>
-
-                        <TableWrapper>
-                           <div className="p-6 border-b border-[var(--color-border)] font-bold text-xs uppercase tracking-widest text-slate-500">Recent Payments</div>
-                           <StyledTable>
-                              <thead>
-                                 <tr>
-                                    <th>Date</th>
-                                    <th>Amount</th>
-                                    <th>Ref</th>
-                                 </tr>
-                              </thead>
-                              <tbody>
-                                 {overviewData.payments.slice(0, 5).map((p, i) => (
-                                    <tr key={i}>
-                                       <td>{p.payment_date}</td>
-                                       <td>KES {parseFloat(p.amount).toLocaleString()}</td>
-                                       <td className="font-mono text-[10px] text-slate-500">{p.transaction_reference || 'N/A'}</td>
-                                    </tr>
-                                 ))}
-                                 {overviewData.payments.length === 0 && (
-                                    <tr><td colSpan="3" className="py-20 text-center opacity-30 italic text-[10px] font-bold uppercase tracking-widest">No Payment Activity</td></tr>
-                                 )}
-                              </tbody>
-                           </StyledTable>
-                        </TableWrapper>
-                     </div>
 
                      <ChartWrapper>
                         <div className="chart-header">
                            <div>
                               <h3>Billing & Revenue Performance</h3>
-                              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Full Annual Cycle • Jan - Dec</p>
+                              <p className="text-[10px] text-slate-500 font-bold tracking-widest mt-1">Full Annual Cycle • Jan - Dec</p>
                            </div>
                            <div className="flex items-center gap-6">
                               <div className="flex items-center gap-2">
                                  <div className="w-3 h-3 rounded-full bg-indigo-500" />
-                                 <span className="text-[10px] font-bold text-slate-500 uppercase">Total Billed</span>
+                                 <span className="text-[10px] font-bold text-slate-500">Total Billed</span>
                               </div>
                               <div className="flex items-center gap-2">
                                  <div className="w-3 h-3 rounded-full bg-emerald-500" />
-                                 <span className="text-[10px] font-bold text-slate-500 uppercase">Total Paid</span>
+                                 <span className="text-[10px] font-bold text-slate-500">Total Paid</span>
                               </div>
                            </div>
                         </div>
@@ -1057,72 +863,86 @@ export default function Subscriptions({
                      </ChartWrapper>
                   </div>
                ) : (
-                  <TableWrapper className="animate-in-fade">
-                     <div className="flex justify-between items-center p-6 border-b border-[var(--color-border)]">
-                        <div className="text-xs uppercase font-black text-slate-500 tracking-widest">{activeTab} Stream</div>
+                  <div className="animate-in-fade space-y-6">
+                     <div className="flex justify-between items-center bg-transparent pt-4">
+                        <div className="flex items-center gap-6">
+                           <div className="text-xs font-black text-slate-500 tracking-widest">{activeTab} Stream</div>
+                           <div className="relative">
+                              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={14} />
+                              <input
+                                 type="text"
+                                 placeholder={`Search ${activeTab}...`}
+                                 value={textSearch}
+                                 onChange={(e) => setTextSearch(e.target.value)}
+                                 className="bg-black/20 border border-white/5 py-3 pl-10 pr-6 text-xs focus:ring-1 focus:ring-indigo-500 outline-none w-[280px] transition-all"
+                                 style={{ borderRadius: 'var(--radius-sm)' }}
+                              />
+                           </div>
+                        </div>
                         {activeTab === 'plans' && (
-                           <button className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition-all"
-                              style={{ borderRadius: 'var(--radius-md)' }}
+                           <button className="bg-indigo-600 hover:bg-indigo-500 text-white px-7 py-3 text-[10px] font-black tracking-widest flex items-center gap-3 transition-all"
+                              style={{ borderRadius: 'var(--radius-sm)' }}
                               onClick={() => {
                                  setModalData({ id: '', plan_name: '', description: '', amount: 0, currency: 'KES', billing_cycle: 'monthly', features: '', is_active: 1 });
                                  setShowModal(true);
                               }}>
-                              <Plus size={14} /> Add Plan
+                              <Plus size={16} /> Add Plan
                            </button>
                         )}
                      </div>
-                     <StyledTable>
-                        <thead>
-                           <tr>
-                              {data.length > 0 ? Object.keys(data[0]).map(k => (
-                                 <th key={k}>{k.replace(/_/g, ' ')}</th>
-                              )) : (
-                                 <th>No records found in this module</th>
-                              )}
-                              <th style={{ textAlign: 'right' }}>Actions</th>
-                           </tr>
-                        </thead>
-                        <tbody>
-                           {data.map((row, i) => (
-                              <tr key={i}>
-                                 {Object.entries(row).map(([key, val], j) => (
-                                    <td key={j}>
-                                       {key === 'status' || key === 'is_active' ? (
-                                          <Badge type={
-                                             val === 'paid' || val === 1 || val === true || val === 'active' ? 'success' :
-                                                val === 'pending' || val === 'partial' ? 'warning' : 'error'
-                                          }>
-                                             {val === 1 || val === true ? 'Active' : val === 0 || val === false ? 'Inactive' : val}
-                                          </Badge>
-                                       ) : (
-                                          val === null ? <span className="text-slate-600 italic">null</span> : val.toString()
-                                       )}
-                                    </td>
-                                 ))}
-                                 <td>
-                                    <div className="flex justify-end gap-3 px-4">
-                                       {activeTab === 'plans' && (
-                                          <button className="p-2 hover:bg-white/10 text-slate-400 hover:text-white transition-all"
-                                             style={{ borderRadius: 'var(--radius-sm)' }}
-                                             onClick={() => {
-                                                setModalData(row);
-                                                setShowModal(true);
-                                             }}>
-                                             <Edit3 size={16} />
-                                          </button>
-                                       )}
-                                       <button className="p-2 hover:bg-rose-500/10 text-slate-400 hover:text-rose-500 transition-all"
-                                          style={{ borderRadius: 'var(--radius-sm)' }}
-                                          onClick={() => handleDelete(row.id)}>
-                                          <Trash2 size={16} />
-                                       </button>
-                                    </div>
+                     <DataTable
+                        headers={data.length > 0 ? [
+                           ...Object.keys(data[0]).map(k => ({ label: k.replace(/_/g, ' ') })),
+                           { label: 'Actions', style: { textAlign: 'right' } }
+                        ] : [
+                           { label: 'No records found in this module' },
+                           { label: 'Actions', style: { textAlign: 'right' } }
+                        ]}
+                        isEmpty={filteredData.length === 0 && data.length > 0}
+                        emptyMessage={`No matching results for "${textSearch}"`}
+                     >
+                        {filteredData.map((row, i) => (
+                           <tr key={i}>
+                              {Object.entries(row).map(([key, val], j) => (
+                                 <td key={j}>
+                                    {key === 'status' || key === 'is_active' ? (
+                                       <SharedBadge color={getBadgeColor(
+                                          val === 'paid' || val === 1 || val === true || val === 'active' ? 'success' :
+                                             val === 'pending' || val === 'partial' ? 'warning' : 'error'
+                                       )}>
+                                          {val === 1 || val === true ? 'Active' : val === 0 || val === false ? 'Inactive' : val}
+                                       </SharedBadge>
+                                    ) : (
+                                       val === null ? <span className="text-slate-600 italic">null</span> : val.toString()
+                                    )}
                                  </td>
-                              </tr>
-                           ))}
-                        </tbody>
-                     </StyledTable>
-                  </TableWrapper>
+                              ))}
+                              <td>
+                                 <div className="flex justify-end gap-3 px-4">
+                                    {activeTab === 'plans' && (
+                                       <button className="p-2 hover:bg-white/10 text-slate-400 hover:text-white transition-all"
+                                          style={{ borderRadius: 'var(--radius-sm)' }}
+                                          onClick={() => {
+                                             setModalData(row);
+                                             setShowModal(true);
+                                          }}>
+                                          <Edit3 size={16} />
+                                       </button>
+                                    )}
+                                    <button className="p-2 hover:bg-rose-500/10 text-slate-400 hover:text-rose-500 transition-all"
+                                       style={{ borderRadius: 'var(--radius-sm)' }}
+                                       onClick={() => handleDelete(row.id)}>
+                                       <Trash2 size={16} />
+                                    </button>
+                                 </div>
+                              </td>
+                           </tr>
+                        ))}
+                        {filteredData.length === 0 && data.length > 0 && (
+                           <tr><td colSpan="100%" className="py-20 text-center opacity-30 italic text-[10px] font-bold tracking-widest">No matching results for "{textSearch}"</td></tr>
+                        )}
+                     </DataTable>
+                  </div>
                )}
             </MainContentArea>
          </FlexContainer>
@@ -1132,13 +952,13 @@ export default function Subscriptions({
                <ModalContent onClick={e => e.stopPropagation()} className="animate-in-slide-up">
                   <X className="close-btn" size={20} onClick={() => setShowModal(false)} />
                   <div className="mb-8">
-                     <h2 className="text-2xl font-black tracking-tight text-white uppercase">{modalData.id ? 'Modify Plan Architecture' : 'Initialize New Plan'}</h2>
-                     <p className="text-[10px] text-slate-500 uppercase tracking-widest mt-1">Remote Site Persistence Layer</p>
+                     <h2 className="text-2xl font-black tracking-tight text-white">{modalData.id ? 'Modify Plan Architecture' : 'Initialize New Plan'}</h2>
+                     <p className="text-[10px] text-slate-500 tracking-widest mt-1">Remote Site Persistence Layer</p>
                   </div>
 
                   <form onSubmit={handleSaveSubscription} className="space-y-6">
                      <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Plan Name</label>
+                        <label className="text-[10px] font-bold text-slate-500 tracking-widest px-1">Plan Name</label>
                         <input required value={modalData.plan_name} onChange={e => setModalData({ ...modalData, plan_name: e.target.value })}
                            className="w-full bg-black/40 border border-white/5 px-5 py-4 text-xs outline-none focus:border-indigo-500/30 text-white"
                            style={{ borderRadius: 'var(--radius-sm)' }}
@@ -1146,7 +966,7 @@ export default function Subscriptions({
                      </div>
 
                      <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Description</label>
+                        <label className="text-[10px] font-bold text-slate-500 tracking-widest px-1">Description</label>
                         <textarea rows="3" value={modalData.description} onChange={e => setModalData({ ...modalData, description: e.target.value })}
                            className="w-full bg-black/40 border border-white/5 px-5 py-4 text-xs outline-none focus:border-indigo-500/30 text-white"
                            style={{ borderRadius: 'var(--radius-lg)' }}
@@ -1155,14 +975,14 @@ export default function Subscriptions({
 
                      <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-2">
-                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Amount</label>
+                           <label className="text-[10px] font-bold text-slate-500 tracking-widest px-1">Amount</label>
                            <input type="number" required value={modalData.amount} onChange={e => setModalData({ ...modalData, amount: e.target.value })}
                               className="w-full bg-black/40 border border-white/5 px-5 py-4 text-xs outline-none focus:border-indigo-500/30 text-white"
                               style={{ borderRadius: 'var(--radius-lg)' }}
                               placeholder="5000" />
                         </div>
                         <div className="space-y-2">
-                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Currency</label>
+                           <label className="text-[10px] font-bold text-slate-500 tracking-widest px-1">Currency</label>
                            <input required value={modalData.currency} onChange={e => setModalData({ ...modalData, currency: e.target.value })}
                               className="w-full bg-black/40 border border-white/5 px-5 py-4 text-xs outline-none focus:border-indigo-500/30 text-white font-mono"
                               style={{ borderRadius: 'var(--radius-lg)' }}
@@ -1172,7 +992,7 @@ export default function Subscriptions({
 
                      <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-2">
-                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Billing Cycle</label>
+                           <label className="text-[10px] font-bold text-slate-500 tracking-widest px-1">Billing Cycle</label>
                            <select value={modalData.billing_cycle} onChange={e => setModalData({ ...modalData, billing_cycle: e.target.value })}
                               className="w-full bg-black/40 border border-white/5 px-5 py-4 text-xs outline-none focus:border-indigo-500/30 text-white appearance-none"
                               style={{ borderRadius: 'var(--radius-lg)' }}
@@ -1183,7 +1003,7 @@ export default function Subscriptions({
                            </select>
                         </div>
                         <div className="space-y-2">
-                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Initial Status</label>
+                           <label className="text-[10px] font-bold text-slate-500 tracking-widest px-1">Initial Status</label>
                            <select value={modalData.is_active} onChange={e => setModalData({ ...modalData, is_active: parseInt(e.target.value) })}
                               className="w-full bg-black/40 border border-white/5 px-5 py-4 text-xs outline-none focus:border-indigo-500/30 text-white appearance-none"
                               style={{ borderRadius: 'var(--radius-sm)' }}
@@ -1195,7 +1015,7 @@ export default function Subscriptions({
                      </div>
 
                      <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Features</label>
+                        <label className="text-[10px] font-bold text-slate-500 tracking-widest px-1">Features</label>
                         <input value={modalData.features} onChange={e => setModalData({ ...modalData, features: e.target.value })}
                            className="w-full bg-black/40 border border-white/5 px-5 py-4 text-xs outline-none focus:border-indigo-500/30 text-white"
                            style={{ borderRadius: 'var(--radius-lg)' }}
@@ -1203,8 +1023,8 @@ export default function Subscriptions({
                      </div>
 
                      <div className="pt-4 flex gap-4">
-                        <button type="button" onClick={() => setShowModal(false)} className="flex-1 bg-white/5 hover:bg-white/10 py-4 text-[11px] font-black uppercase tracking-widest transition-all text-slate-400" style={{ borderRadius: 'var(--radius-lg)' }}>Cancel</button>
-                        <button type="submit" className="flex-1 bg-indigo-600 hover:bg-indigo-500 py-4 text-[11px] font-black uppercase tracking-widest transition-all shadow-xl shadow-indigo-600/30 text-white" style={{ borderRadius: 'var(--radius-lg)' }}>Commit Changes</button>
+                        <button type="button" onClick={() => setShowModal(false)} className="flex-1 bg-white/5 hover:bg-white/10 py-4 text-[11px] font-black tracking-widest transition-all text-slate-400" style={{ borderRadius: 'var(--radius-lg)' }}>Cancel</button>
+                        <button type="submit" className="flex-1 bg-indigo-600 hover:bg-indigo-500 py-4 text-[11px] font-black tracking-widest transition-all shadow-xl shadow-indigo-600/30 text-white" style={{ borderRadius: 'var(--radius-lg)' }}>Commit Changes</button>
                      </div>
                   </form>
                </ModalContent>

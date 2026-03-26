@@ -9,7 +9,7 @@ export function LogModal({ showLogModal, setShowLogModal, logLoading, logs }) {
         <div className="fixed inset-0 z-[150] flex items-center justify-center p-6 backdrop-blur-2xl bg-black/60">
             <div className="card-surface w-full max-w-5xl h-[80vh] p-10 relative flex flex-col" style={{ borderRadius: 'var(--radius-sm)' }}>
                 <div className="flex justify-between items-start mb-8">
-                    <div><h2 className="text-3xl font-black tracking-tighter">Audit Control Center</h2><p className="text-[10px] text-slate-500 uppercase tracking-widest mt-1">Remote Access / Last 100 System Activities</p></div>
+                    <div><h2 className="text-3xl font-black tracking-tighter">Audit Control Center</h2><p className="text-[10px] text-slate-500 tracking-widest mt-1">Remote Access / Last 100 System Activities</p></div>
                     <button onClick={() => setShowLogModal(false)} className="p-2 hover:bg-white/5" style={{ borderRadius: 'var(--radius-sm)' }}><X size={20} /></button>
                 </div>
 
@@ -17,11 +17,11 @@ export function LogModal({ showLogModal, setShowLogModal, logLoading, logs }) {
                     {logLoading ? (
                         <div className="h-full flex flex-col items-center justify-center space-y-4 opacity-50">
                             <RefreshCw className="animate-spin text-indigo-500" size={32} />
-                            <div className="text-[10px] font-black uppercase tracking-[0.2em]">Connecting to Site...</div>
+                            <div className="text-[10px] font-black tracking-[0.2em]">Connecting to Site...</div>
                         </div>
                     ) : (
                         <table className="w-full text-left border-collapse">
-                            <thead className="sticky top-0 bg-[#161619] text-[9px] font-black text-slate-600 uppercase tracking-widest border-b border-white/5 z-10">
+                             <thead className="sticky top-0 bg-[#161619] text-[9px] font-black text-slate-600 tracking-widest border-b border-white/5 z-10">
                                 <tr>
                                     <th className="px-6 py-4">Action / Event</th>
                                     <th className="px-6 py-4">Context</th>
@@ -54,7 +54,7 @@ export function BridgeModal({ showBridgeModal, setShowBridgeModal, bridgeForm, s
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 backdrop-blur-xl bg-black/40">
             <div className="card-surface w-full max-w-2xl p-10 relative space-y-8" style={{ borderRadius: 'var(--radius-sm)' }}>
                 <div className="flex justify-between items-start">
-                    <div><h2 className="text-2xl font-black tracking-tighter">{bridgeForm.id ? 'Edit Site Connection' : 'New Site Connection'}</h2><p className="text-[10px] text-slate-500 uppercase tracking-widest mt-1">Setting up system link</p></div>
+                    <div><h2 className="text-2xl font-black tracking-tighter">{bridgeForm.id ? 'Edit Site Connection' : 'New Site Connection'}</h2><p className="text-[10px] text-slate-500 tracking-widest mt-1">Setting up system link</p></div>
                     <button onClick={() => setShowBridgeModal(false)} className="p-2 hover:bg-white/5" style={{ borderRadius: 'var(--radius-sm)' }}><X size={20} /></button>
                 </div>
                 <form onSubmit={handleSaveBridge} className="space-y-6">
@@ -81,14 +81,14 @@ export function BridgeModal({ showBridgeModal, setShowBridgeModal, bridgeForm, s
 
                     <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-2">
-                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Database Name</label>
+                            <label className="text-[10px] font-bold text-slate-500 tracking-widest px-1">Database Name</label>
                             <input value={bridgeForm.db_name} onChange={e => setBridgeForm({ ...bridgeForm, db_name: e.target.value })} 
                                className="w-full bg-black/40 border border-white/5 px-5 py-4 text-xs outline-none focus:border-white/10" 
                                style={{ borderRadius: 'var(--radius-sm)' }}
                                placeholder="e.g. site_db" />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Tags (Comma Separated)</label>
+                            <label className="text-[10px] font-bold text-slate-500 tracking-widest px-1">Tags (Comma Separated)</label>
                             <input value={bridgeForm.tags} onChange={e => setBridgeForm({ ...bridgeForm, tags: e.target.value })} 
                                className="w-full bg-black/40 border border-white/5 px-5 py-4 text-xs outline-none focus:border-white/10" 
                                style={{ borderRadius: 'var(--radius-sm)' }}
@@ -97,14 +97,14 @@ export function BridgeModal({ showBridgeModal, setShowBridgeModal, bridgeForm, s
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest px-1">Connection Key</label>
+                        <label className="text-[10px] font-bold text-indigo-500 tracking-widest px-1">Connection Key</label>
                         <input value={bridgeForm.connection_string_name} onChange={e => setBridgeForm({ ...bridgeForm, connection_string_name: e.target.value })} 
                            className="w-full bg-black/40 border border-white/5 px-5 py-4 text-[10px] font-mono outline-none" 
                            style={{ borderRadius: 'var(--radius-sm)' }}
                            placeholder="e.g. LIVE_CREDENTIALS" />
                     </div>
 
-                    <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-500 py-4 text-[11px] font-black uppercase tracking-widest transition-all" style={{ borderRadius: 'var(--radius-sm)' }}>
+                    <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-500 py-4 text-[11px] font-black tracking-widest transition-all" style={{ borderRadius: 'var(--radius-sm)' }}>
                         {bridgeForm.id ? 'Save Connection' : 'Create Connection'}
                     </button>
                 </form>
@@ -122,8 +122,8 @@ export function ClientModal({ showClientModal, setShowClientModal, clientForm, s
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-indigo-600/10 flex items-center justify-center text-indigo-500 border border-indigo-500/10 shadow-[0_0_30px_rgba(99,102,241,0.1)]" style={{ borderRadius: 'var(--radius-md)' }}><Briefcase size={22} /></div>
                         <div>
-                            <h2 className="text-2xl font-black tracking-tighter text-white">Register Client</h2>
-                            <p className="text-[10px] text-slate-500 uppercase tracking-widest mt-1">Initialize New Managed Entity</p>
+                            <h2 className="text-2xl font-black tracking-tighter text-white">{clientForm.id ? 'Modify Client' : 'Register Client'}</h2>
+                            <p className="text-[10px] text-slate-500 tracking-widest mt-1">{clientForm.id ? 'Update existing entity' : 'Initialize New Managed Entity'}</p>
                         </div>
                     </div>
                     <button onClick={() => setShowClientModal(false)} className="p-2 hover:bg-white/5 text-slate-500 hover:text-white transition-colors" style={{ borderRadius: 'var(--radius-sm)' }}><X size={20} /></button>
@@ -132,14 +132,18 @@ export function ClientModal({ showClientModal, setShowClientModal, clientForm, s
                     e.preventDefault();
                     if (clientForm.name) {
                         try {
-                            await axios.post(`${API_BASE}/clients`, clientForm);
+                            if (clientForm.id) {
+                                await axios.put(`${API_BASE}/clients/${clientForm.id}`, clientForm);
+                            } else {
+                                await axios.post(`${API_BASE}/clients`, clientForm);
+                            }
                             setShowClientModal(false);
                             fetchData();
-                        } catch(e) { alert("Failed to register client"); }
+                        } catch(e) { alert("Failed to save client: " + (e.response?.data?.error || e.message)); }
                     }
                 }} className="space-y-6 pt-4">
                     <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Legal Entity Name</label>
+                        <label className="text-[10px] font-bold text-slate-500 tracking-widest px-1">Legal Entity Name</label>
                         <input 
                             autoFocus 
                             required 
@@ -152,8 +156,10 @@ export function ClientModal({ showClientModal, setShowClientModal, clientForm, s
                     </div>
 
                     <div className="flex gap-3 pt-4">
-                        <button type="button" onClick={() => setShowClientModal(false)} className="flex-1 bg-white/[0.03] hover:bg-white/[0.06] border border-white/5 py-4 text-[11px] font-black uppercase tracking-widest transition-all text-slate-400" style={{ borderRadius: 'var(--radius-sm)' }}>Cancel</button>
-                        <button type="submit" className="flex-1 bg-indigo-600 hover:bg-indigo-500 py-4 text-[11px] font-black uppercase tracking-widest transition-all shadow-[0_10px_30px_rgba(79,70,229,0.3)] text-white" style={{ borderRadius: 'var(--radius-sm)' }}>Register Site</button>
+                        <button type="button" onClick={() => setShowClientModal(false)} className="flex-1 bg-white/[0.03] hover:bg-white/[0.06] border border-white/5 py-4 text-[11px] font-black tracking-widest transition-all text-slate-400" style={{ borderRadius: 'var(--radius-sm)' }}>Cancel</button>
+                        <button type="submit" className="flex-1 bg-indigo-600 hover:bg-indigo-500 py-4 text-[11px] font-black tracking-widest transition-all shadow-[0_10px_30px_rgba(79,70,229,0.3)] text-white" style={{ borderRadius: 'var(--radius-sm)' }}>
+                            {clientForm.id ? 'Save Changes' : 'Register Site'}
+                        </button>
                     </div>
                 </form>
             </div>

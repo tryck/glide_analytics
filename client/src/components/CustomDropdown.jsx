@@ -25,7 +25,7 @@ export default function CustomDropdown({ options, value, onChange, placeholder, 
 
    return (
       <div className="space-y-2 relative" ref={containerRef}>
-         {label && <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">{label}</label>}
+         {label && <label className="text-[10px] font-bold text-slate-500 tracking-widest px-1">{label}</label>}
          <div
             onClick={() => setIsOpen(!isOpen)}
             className={`w-full bg-black/40 border border-white/5 px-5 py-4 text-xs flex items-center justify-between cursor-pointer transition-all hover:bg-white/[0.03] ${isOpen ? 'border-indigo-500/30 ring-1 ring-indigo-500/10' : ''}`}
@@ -71,7 +71,7 @@ export default function CustomDropdown({ options, value, onChange, placeholder, 
                         {String(opt.value) === String(value) && <div className="w-1 h-1 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,1)]" />}
                      </div>
                   )) : (
-                     <div className="py-8 text-center text-[10px] text-slate-600 font-bold uppercase tracking-widest italic px-4">No matches found</div>
+                     <div className="py-8 text-center text-[10px] text-slate-600 font-bold tracking-widest italic px-4">No matches found</div>
                   )}
                </div>
             </div>

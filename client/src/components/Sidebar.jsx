@@ -35,13 +35,13 @@ export default function Sidebar({
 
    const menuGroups = [
       {
-         title: 'OVERVIEW',
+         title: 'Overview',
          items: [
             { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
          ]
       },
       {
-         title: 'MANAGEMENT',
+         title: 'Management',
          items: [
             {
                id: 'subscriptions',
@@ -61,7 +61,7 @@ export default function Sidebar({
          ]
       },
       {
-         title: 'ADMIN',
+         title: 'Admin',
          items: [
             { id: 'users', label: 'Users', icon: Users },
             { id: 'settings', label: 'Settings', icon: Settings },
@@ -84,7 +84,7 @@ export default function Sidebar({
 
    return (
       <aside className="w-[230px] bg-[var(--color-bg-sidebar)] border-r border-[var(--color-border)] h-screen flex flex-col fixed left-0 top-0 z-50 font-['Lexend'] overflow-hidden ">
-         <div className="h-[60px] px-5 border-b border-[var(--color-border)] flex items-center">
+         <div className="h-[60px] px-2 border-b border-[var(--color-border)] flex items-center">
             <div className="w-full cursor-pointer transition-all" onClick={() => handleNavigate('dashboard')}>
                <div className="flex items-center gap-2.5">
                   <div className="min-w-0">
@@ -105,7 +105,7 @@ export default function Sidebar({
                               onClick={() => handleNavigate(i.id)}
                               className={`sidebar-item flex items-center justify-between group ${activeView === i.id ? 'active' : ''}`}
                            >
-                              <div className="flex items-center gap-3">
+                              <div className="flex items-center gap-3 px-0">
                                  <i.icon size={17} className={activeView === i.id ? 'text-[var(--color-accent)]' : 'text-[var(--color-text-secondary)]'} />
                                  <span>{i.label}</span>
                               </div>
@@ -143,7 +143,7 @@ export default function Sidebar({
                                     );
                                  })}
                                  {(!products || products.length === 0) && (
-                                    <div className="py-2 px-4 text-[9px] uppercase tracking-widest text-slate-700 italic">No products available</div>
+                                    <div className="py-2 px-4 text-[9px] tracking-widest text-slate-700 italic">No products available</div>
                                  )}
                               </div>
                            )}

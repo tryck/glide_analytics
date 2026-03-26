@@ -53,6 +53,20 @@ app.post('/api/clients', async (req, res) => {
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+app.put('/api/clients/:id', async (req, res) => {
+    try {
+        await pool.execute('UPDATE clients SET name = ? WHERE id = ?', [req.body.name || null, req.params.id]);
+        res.json({ success: true, ...req.body });
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/clients/:id', async (req, res) => {
+    try {
+        await pool.execute('DELETE FROM clients WHERE id = ?', [req.params.id]);
+        res.json({ success: true });
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 // Servers
 app.get('/api/servers', async (req, res) => {
     try {
@@ -128,25 +142,25 @@ app.put('/api/client-products/:id', async (req, res) => {
     try {
         console.log("Updating Bridge ID:", req.params.id, "Body:", req.body);
         const values = [
-            client_id || null, 
-            product_id || null, 
-            db_name || null, 
-            connection_string_name || null, 
+            client_id || null,
+            product_id || null,
+            db_name || null,
+            connection_string_name || null,
             tags || null,
             req.params.id || null
         ];
-        
+
         await pool.execute(
             'UPDATE client_product SET client_id = ?, product_id = ?, db_name = ?, connection_string_name = ?, tags = ? WHERE id = ?',
             values
         );
         res.json({ success: true });
-    } catch (e) { 
+    } catch (e) {
         console.error("PUT /api/client-products/ Error:", e.message);
-        res.status(500).json({ 
+        res.status(500).json({
             error: e.message,
             tip: "Ensure all parameters are defined. Driver received: " + JSON.stringify(req.body)
-        }); 
+        });
     }
 });
 
@@ -158,7 +172,7 @@ app.get('/api/client-products/:id/logs', async (req, res) => {
             JOIN products p ON cp.product_id = p.id
             WHERE cp.id = ?
         `, [req.params.id]);
-        
+
         const bridge = rows[0];
         if (!bridge) return res.status(404).json({ error: 'Bridge not found' });
 
@@ -221,7 +235,7 @@ app.post('/api/client-products/:id/tables/:tableName', checkAuth, async (req, re
 
         const targetDb = req.query.db || bridge.db_name;
         const body = req.body;
-        
+
         let connConfig;
         if (bridge.connection_string_name && process.env[bridge.connection_string_name]) {
             connConfig = process.env[bridge.connection_string_name];
@@ -250,7 +264,7 @@ app.put('/api/client-products/:id/tables/:tableName/:rowId', checkAuth, async (r
 
         const targetDb = req.query.db || bridge.db_name;
         const body = req.body;
-        
+
         let connConfig;
         if (bridge.connection_string_name && process.env[bridge.connection_string_name]) {
             connConfig = process.env[bridge.connection_string_name];
@@ -305,7 +319,7 @@ app.get('/api/analysis', async (req, res) => {
             JOIN clients c ON cp.client_id = c.id
             JOIN products p ON cp.product_id = p.id
         `);
-        
+
         const results = await Promise.all(bridges.map(async (bridge) => {
             try {
                 const mapping = bridge.field_mapping || {};
@@ -328,14 +342,14 @@ app.get('/api/analysis', async (req, res) => {
                 }
 
                 const conn = await mysql.createConnection(connConfig);
-                
+
                 const safeCount = async (tbl, where = null) => {
-                    try { 
+                    try {
                         let query = `SELECT COUNT(*) as c FROM ${tbl}`;
                         if (where) query += ` WHERE ${where}`;
-                        const [r] = await conn.execute(query); 
-                        return r[0].c; 
-                    } catch(e) { return null; }
+                        const [r] = await conn.execute(query);
+                        return r[0].c;
+                    } catch (e) { return null; }
                 };
 
                 const stats = {};
@@ -346,7 +360,7 @@ app.get('/api/analysis', async (req, res) => {
                         stats[m.label] = (await safeCount(g.name, m.where)) ?? 0;
                     }
                 }
-                
+
                 let lic = 'Active';
                 try {
                     const lock = mapping.lock_config;
@@ -354,23 +368,23 @@ app.get('/api/analysis', async (req, res) => {
                         const [opt] = await conn.execute(`SELECT ${lock.field} as val FROM ${lock.table} WHERE ${lock.name_col} = ? LIMIT 1`, [lock.name_val]);
                         if (opt[0]?.val == 1) lic = 'Locked';
                     }
-                } catch(e){}
+                } catch (e) { }
 
                 await conn.end();
                 return {
                     ...bridge,
                     id: bridge.id,
-                    name: `${bridge.client_name} - ${bridge.product_name}`,
+                    name: `${bridge.client_name}`,
                     status: 'Online',
                     stats: { ...stats, license: lic }
                 };
             } catch (err) {
-                return { 
+                return {
                     ...bridge,
                     id: bridge.id,
-                    name: `${bridge.client_name} - ${bridge.product_name}`,
-                    status: 'Offline', 
-                    error: err.message 
+                    name: `${bridge.client_name}`,
+                    status: 'Offline',
+                    error: err.message
                 };
             }
         }));
@@ -396,7 +410,7 @@ app.post('/api/sites/:id/toggle-lock', async (req, res) => {
         );
         const bridge = rows[0];
         if (!bridge) return res.status(404).json({ error: 'Site not found' });
-        
+
         const mapping = typeof bridge.field_mapping === 'string' ? JSON.parse(bridge.field_mapping) : bridge.field_mapping;
         const lock = mapping?.lock_config;
         if (!lock) return res.status(400).json({ error: 'Product does not support remote locking' });
@@ -408,13 +422,13 @@ app.post('/api/sites/:id/toggle-lock', async (req, res) => {
             connConfig = connConfig.toString().endsWith('/') ? connConfig + bridge.db_name : connConfig + '/' + bridge.db_name;
         }
         const conn = await mysql.createConnection(connConfig);
-        
+
         const [statusRows] = await conn.execute(`SELECT ${lock.field} as val FROM ${lock.table} WHERE ${lock.name_col} = ? LIMIT 1`, [lock.name_val]);
         const nextVal = (statusRows[0]?.val == 1) ? 0 : 1;
-        
+
         await conn.execute(`UPDATE ${lock.table} SET ${lock.field} = ? WHERE ${lock.name_col} = ?`, [nextVal, lock.name_val]);
         await conn.end();
-        
+
         res.json({ success: true, locked: nextVal === 1 });
     } catch (e) { res.status(500).json({ error: e.message }); }
 });

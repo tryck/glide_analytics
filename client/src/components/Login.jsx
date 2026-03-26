@@ -24,17 +24,17 @@ export default function Login({ onLogin, API_BASE }) {
          <div className="card-surface w-full max-w-[400px] p-12 border-[var(--color-border)] bg-[var(--color-bg-card)] relative z-10 animate-in-fade">
             <div className="text-center mb-10">
                <h2 className="text-2xl font-bold text-white tracking-tight mb-2">Admin Portal</h2>
-               <p className="text-[11px] text-[#a0a0a5] uppercase tracking-wider font-semibold">DigitalGlide Analytics</p>
+               <p className="text-[11px] text-[#a0a0a5] tracking-wider font-semibold">DigitalGlide Analytics</p>
             </div>
             
             <form onSubmit={handleSubmit} className="space-y-6">
                <div className="space-y-2">
-                  <label className="text-[11px] font-semibold text-[#606065] uppercase tracking-wider">Operator Identity</label>
+                  <label className="text-[11px] font-semibold text-[#606065] tracking-wider">Operator Identity</label>
                   <input required value={username} onChange={e => setUsername(e.target.value)} className="input-field" placeholder="Username" />
                </div>
                
                <div className="space-y-2">
-                  <label className="text-[11px] font-semibold text-[#606065] uppercase tracking-wider">Access Protocol</label>
+                  <label className="text-[11px] font-semibold text-[#606065] tracking-wider">Access Protocol</label>
                   <input type="password" required value={password} onChange={e => setPassword(e.target.value)} className="input-field" placeholder="••••••••" />
                </div>
                

@@ -26,14 +26,14 @@ export default function BridgeTunnel({
                <button onClick={() => setSelectedBridge(null)} className="p-2 bg-white/5 border border-[var(--color-border)] rounded-md text-[#707075] hover:text-white transition-all"><ChevronRight size={16} className="rotate-180" /></button>
                <div className="truncate">
                   <h2 className="text-[15px] font-bold text-white truncate max-w-[180px]">{selectedBridge.name}</h2>
-                  <p className="text-[11px] font-semibold text-[#a0a0a5] uppercase tracking-wider mt-0.5">Tunnel Active</p>
+                  <p className="text-[11px] font-semibold text-[#a0a0a5] tracking-wider mt-0.5">Tunnel Active</p>
                </div>
             </div>
 
             {bridgeProduct ? (
                <div className="space-y-6 flex-1">
                   <div className="flex justify-between items-center">
-                     <label className="text-[11px] font-bold text-[#606065] uppercase tracking-wider">Schema Mapping</label>
+                     <label className="text-[11px] font-bold text-[#606065] tracking-wider">Schema Mapping</label>
                      <button onClick={() => {
                         const newM = { ...bridgeProduct.field_mapping, tables: [...(bridgeProduct.field_mapping?.tables || []), { name: 'new_table', metrics: [] }] };
                         syncProduct({ ...bridgeProduct, field_mapping: newM });
@@ -57,7 +57,7 @@ export default function BridgeTunnel({
 
             <div className="pt-6 border-t border-[var(--color-border)]">
                <div className="p-4 bg-white/[0.02] rounded-lg border border-[var(--color-border)]">
-                  <p className="text-[10px] font-bold text-[#606065] uppercase tracking-wider mb-2">Db Identity</p>
+                  <p className="text-[10px] font-bold text-[#606065] tracking-wider mb-2">Db Identity</p>
                   <p className="text-[12px] font-mono text-[var(--color-accent)] break-all">{selectedBridge.db_name}</p>
                </div>
             </div>
@@ -71,8 +71,8 @@ export default function BridgeTunnel({
                <div className="space-y-10 animate-in-fade h-full flex flex-col relative z-10">
                   <div className="flex justify-between items-start">
                      <div className="space-y-2">
-                        <h3 className="text-4xl font-black tracking-tighter text-gradient uppercase">Node View: {bridgeProduct.field_mapping.tables[selectedTableIdx].name}</h3>
-                        <p className="text-[11px] text-slate-500 font-black uppercase tracking-[0.3em]">{selectedBridge.name} / Real-time Telemetry Data</p>
+                        <h3 className="text-4xl font-black tracking-tighter text-gradient">Node View: {bridgeProduct.field_mapping.tables[selectedTableIdx].name}</h3>
+                        <p className="text-[11px] text-slate-500 font-black tracking-[0.3em]">{selectedBridge.name} / Real-time Telemetry Data</p>
                      </div>
                      <button onClick={() => {
                         const tableName = bridgeProduct.field_mapping.tables[selectedTableIdx].name;
@@ -86,7 +86,7 @@ export default function BridgeTunnel({
                   {dataLoading ? (
                      <div className="flex-1 flex flex-col items-center justify-center space-y-6 opacity-30">
                         <RefreshCw size={48} className="animate-spin text-indigo-500" />
-                        <div className="text-[11px] font-black uppercase tracking-[0.4em]">Syncing Remote Stream...</div>
+                        <div className="text-[11px] font-black tracking-[0.4em]">Syncing Remote Stream...</div>
                      </div>
                   ) : (
                      <div className="flex-1 border border-[var(--color-border)] rounded-[2.5rem] overflow-hidden bg-[var(--color-bg-card-soft)] backdrop-blur-2xl flex flex-col shadow-2xl">
@@ -95,8 +95,8 @@ export default function BridgeTunnel({
                               <thead className="sticky top-0 bg-[var(--color-bg-card-soft)] border-b border-[var(--color-border)] z-10">
                                  <tr>
                                     {bridgeTableData && bridgeTableData.length > 0 ? Object.keys(bridgeTableData[0]).map(k => (
-                                       <th key={k} className="px-8 py-6 text-[10px] font-black text-[var(--color-text-secondary)] uppercase tracking-[0.2em]">{k}</th>
-                                    )) : <th className="px-8 py-6 text-[10px] font-black text-[var(--color-text-secondary)] uppercase tracking-[0.2em]">Field Mapping...</th>}
+                                       <th key={k} className="px-8 py-6 text-[10px] font-black text-[var(--color-text-secondary)] tracking-[0.2em]">{k}</th>
+                                    )) : <th className="px-8 py-6 text-[10px] font-black text-[var(--color-text-secondary)] tracking-[0.2em]">Field Mapping...</th>}
                                  </tr>
                               </thead>
                               <tbody className="divide-y divide-[var(--color-border)]/20">
@@ -110,7 +110,7 @@ export default function BridgeTunnel({
                                     </tr>
                                  ))}
                                  {(!bridgeTableData || bridgeTableData.length === 0) && (
-                                    <tr><td colSpan="100" className="py-32 text-center opacity-20 text-[12px] font-black uppercase tracking-[0.5em] text-[var(--color-text-primary)]">No signal telemetry returned.</td></tr>
+                                    <tr><td colSpan="100" className="py-32 text-center opacity-20 text-[12px] font-black tracking-[0.5em] text-[var(--color-text-primary)]">No signal telemetry returned.</td></tr>
                                  )}
                               </tbody>
                            </table>
@@ -122,8 +122,8 @@ export default function BridgeTunnel({
                <div className="h-full flex flex-col items-center justify-center opacity-30 space-y-8 animate-in-fade">
                   <div className="p-10 rounded-full bg-white/[0.02] border border-indigo-500/10 shadow-2xl shadow-indigo-600/5"><Database size={64} className="text-indigo-400" /></div>
                   <div className="text-center">
-                     <h3 className="text-3xl font-black tracking-tighter text-white mb-2 uppercase">Deep Tunnel Protocol</h3>
-                     <p className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-500 max-w-sm mx-auto leading-relaxed">Select a functional architecture block from the left to engage real-time data inspection.</p>
+                     <h3 className="text-3xl font-black tracking-tighter text-white mb-2">Deep Tunnel Protocol</h3>
+                     <p className="text-[11px] font-black tracking-[0.4em] text-slate-500 max-w-sm mx-auto leading-relaxed">Select a functional architecture block from the left to engage real-time data inspection.</p>
                   </div>
                </div>
             )}

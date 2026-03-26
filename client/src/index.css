@@ -4,21 +4,21 @@
 
 :root {
   --transition-speed: 0.3s;
-  
+
   /* modern graphite + plum dark palette */
   --color-bg-main: #0f1117;
   --color-bg-sidebar: #141824;
   --color-bg-header: rgba(16, 20, 30, 0.78);
   --color-bg-card: #1a1f2c;
   --color-bg-card-soft: #181d28;
-  
+
   --color-border: #2c3346;
   --color-border-glow: #48506a;
   --color-text-primary: #edf1ff;
   --color-text-secondary: #a1abc4;
   --color-text-muted: #7f8aa6;
   --color-text-strong: #ffffff;
-  
+
   --color-accent: #8f7be8;
   --color-accent-2: #c4b5fd;
   --color-accent-glow: rgba(143, 123, 232, 0.26);
@@ -27,7 +27,7 @@
   --color-panel-soft: rgba(255, 255, 255, 0.025);
   --color-panel-strong: rgba(255, 255, 255, 0.055);
   --color-topbar-shadow: 0 18px 35px -30px rgba(143, 123, 232, 0.24);
-  
+
   --color-sidebar-text: #a7b0cb;
   --color-sidebar-hover: rgba(143, 123, 232, 0.11);
   --color-sidebar-active: rgba(143, 123, 232, 0.18);
@@ -95,7 +95,7 @@
   --color-sidebar-text: #475569;
   --color-sidebar-hover: #f1f5f9;
   --color-sidebar-active: #e8eefb;
-  
+
   --glass-bg: rgba(255, 255, 255, 0.5);
   --glass-border: #dbe3f2;
 
@@ -170,12 +170,12 @@ body::after {
   .sidebar-item {
     color: var(--color-sidebar-text);
     @apply flex items-center gap-3 px-6 py-2.5 transition-all duration-200 cursor-pointer text-[13px] font-medium;
-    border-right: 3px solid transparent;
+    border-right: 1px solid transparent;
     border-radius: var(--radius-sm) 0 0 var(--radius-sm);
-    margin-left: 10px;
+    margin-left: 4px;
     margin-right: 0;
   }
-  
+
   .sidebar-item:hover {
     background-color: var(--color-sidebar-hover);
     color: var(--color-text-primary);
@@ -191,17 +191,17 @@ body::after {
 
   .nav-group-title {
     color: var(--color-text-secondary);
-    @apply px-6 py-4 text-[10px] font-semibold uppercase tracking-wider;
+    @apply px-6 py-4 text-[10px] font-semibold tracking-wider;
   }
 
   .sidebar-subitem {
-     @apply transition-all duration-200;
+    @apply transition-all duration-200;
   }
-  
+
   .sidebar-subitem:hover {
-     background-color: var(--color-sidebar-hover);
-     transform: translateX(4px);
-     border-radius: var(--radius-sm);
+    background-color: var(--color-sidebar-hover);
+    transform: translateX(4px);
+    border-radius: var(--radius-sm);
   }
 
   .card-surface {
@@ -211,7 +211,7 @@ body::after {
     border-radius: var(--radius-sm);
     @apply p-6 transition-all duration-300;
   }
-  
+
   .card-surface:hover {
     border-color: var(--color-border-glow);
     transform: translateY(-2px);
@@ -236,7 +236,7 @@ body::after {
     background: var(--color-hover-accent);
     border-color: var(--color-hover-border);
   }
-  
+
   .input-field {
     @apply w-full border px-4 py-3 text-sm outline-none transition-all duration-200;
     border-radius: var(--radius-sm);
@@ -244,7 +244,7 @@ body::after {
     background: rgba(13, 19, 35, 0.9);
     border-color: var(--color-border);
   }
-  
+
   .input-field:focus {
     @apply ring-2 ring-[var(--color-accent)];
     border-color: var(--color-accent);
@@ -302,21 +302,33 @@ body::after {
 }
 
 .animate-in-fade {
-    animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
 .animate-in-slide-up {
-    animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideUp {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
 }
 
 .glow-indigo {
@@ -330,13 +342,15 @@ body::after {
 }
 
 @keyframes auroraPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.85;
     transform: scale(1);
   }
+
   50% {
     opacity: 1;
     transform: scale(1.07);
   }
 }
-

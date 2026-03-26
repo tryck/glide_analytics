@@ -59,12 +59,12 @@ const SearchBox = styled.div`
     background: var(--color-input-bg);
     border: 1px solid var(--color-input-border);
     color: var(--color-input-text);
-    padding: 0.5rem 1rem 0.5rem 2.2rem;
+    padding: 0.85rem 1.5rem 0.85rem 3rem;
     border-radius: var(--radius-sm);
     font-size: 0.85rem;
     outline: none;
-    width: 220px;
-    transition: border-color 0.2s;
+    width: 280px;
+    transition: all 0.2s;
 
     &::placeholder {
       color: var(--color-input-placeholder);
@@ -97,13 +97,13 @@ const AddBtn = styled.button`
   background: linear-gradient(135deg, #8b5cf6, #5b45c2);
   border: none;
   color: var(--color-text-strong);
-  padding: 0.5rem 1rem;
+  padding: 0.85rem 1.75rem;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   gap: 0.4rem;
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: 700;
   cursor: pointer;
 
   &:hover {
@@ -115,38 +115,6 @@ const AddBtn = styled.button`
   }
 `;
 
-const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  
-  th, td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid var(--color-table-divider);
-  }
-  
-  th {
-    color: var(--color-table-head);
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding-bottom: 1.2rem;
-  }
-
-  tbody tr {
-    transition: background-color 0.2s;
-    cursor: pointer;
-    
-    &:hover {
-      background-color: var(--color-table-row-hover);
-    }
-    
-    &:last-child td {
-      border-bottom: none;
-    }
-  }
-`;
 
 const CheckboxBase = styled.div`
   width: 18px;
@@ -384,6 +352,12 @@ const ProductCard = styled.div`
 
 export function ProductsView({ products, bridges, handleEditProduct, handleAddProduct }) {
    const [selected, setSelected] = useState([]);
+   const [searchQuery, setSearchQuery] = useState('');
+
+   const filteredProducts = products.filter(p => 
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (p.description || '').toLowerCase().includes(searchQuery.toLowerCase())
+   );
 
    const toggleOne = (e, id) => {
       e.stopPropagation();
@@ -392,16 +366,21 @@ export function ProductsView({ products, bridges, handleEditProduct, handleAddPr
    };
 
    return (
-      <div className="p-12 animate-in-fade">
+      <div className="p-12 animate-in-fade space-y-12">
          <TableHeaderLine>
             <div>
-               <h1 className="text-4xl font-black text-gradient uppercase tracking-tight">Software Registry</h1>
+               <h1 className="text-4xl font-black text-gradient tracking-tight">Software Registry</h1>
                <p className="text-slate-500 font-medium mt-2">Manage global product lifecycle and metric streams</p>
             </div>
             <ActionsContainer>
                <SearchBox>
                   <BsSearch />
-                  <input type="text" placeholder="Search registry..." />
+                  <input 
+                     type="text" 
+                     placeholder="Search registry..." 
+                     value={searchQuery}
+                     onChange={(e) => setSearchQuery(e.target.value)}
+                  />
                </SearchBox>
                <AddBtn onClick={handleAddProduct}>
                   <BsPlus /> Init Artifact
@@ -410,7 +389,7 @@ export function ProductsView({ products, bridges, handleEditProduct, handleAddPr
          </TableHeaderLine>
 
          <ProductGrid>
-            {products.map(p => (
+            {filteredProducts.map(p => (
                <ProductCard key={p.id} onClick={() => handleEditProduct(p)}>
                   <div className="selection-overlay">
                       <CustomCheckbox checked={selected.includes(p.id)} onChange={(e) => toggleOne(e, p.id)} />
@@ -436,7 +415,7 @@ export function ProductsView({ products, bridges, handleEditProduct, handleAddPr
          </ProductGrid>
 
          <PaginationRow>
-            <div className="info">Total Registry Items: {products.length}</div>
+            <div className="info">Total Registry Items: {filteredProducts.length}</div>
             <div className="pages">
                <button>Prev</button>
                <button className="circle active">1</button>
@@ -461,14 +440,14 @@ export function ProductEditView({ selectedProduct, setSelectedProduct, selectedT
                   <BsChevronRight size={14} className="rotate-180 group-hover:-translate-x-0.5 transition-transform" />
                </button>
                <div className="truncate">
-                  <h2 className="text-base font-black tracking-tight truncate text-white uppercase">{selectedProduct.name}</h2>
-                  <p className="text-[8px] font-bold text-slate-600 uppercase tracking-widest mt-0.5">Configuration Shell</p>
+                  <h2 className="text-base font-black tracking-tight truncate text-white">{selectedProduct.name}</h2>
+                  <p className="text-[8px] font-bold text-slate-600 tracking-widest mt-0.5">Configuration Shell</p>
                </div>
             </div>
 
             <div className="space-y-5 flex-1 overflow-y-auto custom-scrollbar pr-2">
                <div className="flex justify-between items-center px-1">
-                  <label className="text-[9px] font-black text-indigo-500 uppercase tracking-widest">Database Schema</label>
+                  <label className="text-[9px] font-black text-indigo-500 tracking-widest">Database Schema</label>
                   <button onClick={() => {
                      const newM = { ...selectedProduct.field_mapping, tables: [...(selectedProduct.field_mapping?.tables || []), { name: 'new_table', metrics: [] }] };
                      syncProduct({ ...selectedProduct, field_mapping: newM });
@@ -481,7 +460,7 @@ export function ProductEditView({ selectedProduct, setSelectedProduct, selectedT
                      className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all border ${selectedTableIdx === null ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-600/20' : 'bg-transparent border-white/5 text-slate-500 hover:bg-white/[0.03] hover:border-white/10'}`}
                   >
                      <BsBoxes size={14} />
-                     <span className="text-[10px] font-bold uppercase tracking-wider">Product Core</span>
+                     <span className="text-[10px] font-bold tracking-wider">Product Core</span>
                   </div>
 
                   {(selectedProduct.field_mapping?.tables || []).map((t, idx) => (
@@ -505,7 +484,7 @@ export function ProductEditView({ selectedProduct, setSelectedProduct, selectedT
             </div>
 
             <div className="pt-6 border-t border-white/5">
-               <button className="flex items-center gap-3 text-slate-700 hover:text-rose-500 text-[9px] font-black uppercase tracking-widest transition-all"><BsTrash size={14} /> Decommission</button>
+               <button className="flex items-center gap-3 text-slate-700 hover:text-rose-500 text-[9px] font-black tracking-widest transition-all"><BsTrash size={14} /> Decommission</button>
             </div>
          </div>
 
@@ -515,8 +494,8 @@ export function ProductEditView({ selectedProduct, setSelectedProduct, selectedT
                <div className="max-w-4xl mx-auto space-y-10 animate-in-fade">
                   <div className="flex justify-between items-end">
                      <div>
-                        <h3 className="text-3xl font-black tracking-tighter text-white uppercase italic">TABLE: {selectedProduct.field_mapping.tables[selectedTableIdx].name}</h3>
-                        <p className="text-[9px] text-slate-500 uppercase tracking-[0.4em] font-bold mt-1 ml-1">Persistence Layer Mapping</p>
+                        <h3 className="text-3xl font-black tracking-tighter text-white italic">TABLE: {selectedProduct.field_mapping.tables[selectedTableIdx].name}</h3>
+                        <p className="text-[9px] text-slate-500 tracking-[0.4em] font-bold mt-1 ml-1">Persistence Layer Mapping</p>
                      </div>
                      <button 
                         onClick={() => {
@@ -524,7 +503,7 @@ export function ProductEditView({ selectedProduct, setSelectedProduct, selectedT
                            newT[selectedTableIdx].metrics = [...(newT[selectedTableIdx].metrics || []), { label: 'New Metric', where: '' }];
                            syncProduct({ ...selectedProduct, field_mapping: { ...selectedProduct.field_mapping, tables: newT } });
                         }}
-                        className="bg-indigo-600 text-white px-6 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-600/30 active:scale-95"
+                        className="bg-indigo-600 text-white px-6 py-3 rounded-xl text-[9px] font-black tracking-widest hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-600/30 active:scale-95"
                      >
                         Inject Metric
                      </button>
@@ -532,7 +511,7 @@ export function ProductEditView({ selectedProduct, setSelectedProduct, selectedT
 
                   <div className="grid grid-cols-1 gap-8">
                      <div className="space-y-3">
-                        <label className="text-[9px] font-bold text-slate-600 uppercase tracking-[0.2em] px-2">Table Logic Identifier (SQL Mapping)</label>
+                        <label className="text-[9px] font-bold text-slate-600 tracking-[0.2em] px-2">Table Logic Identifier (SQL Mapping)</label>
                         <input 
                            value={selectedProduct.field_mapping.tables[selectedTableIdx].name} 
                            onChange={e => {
@@ -546,8 +525,8 @@ export function ProductEditView({ selectedProduct, setSelectedProduct, selectedT
 
                      <div className="space-y-6">
                         <div className="flex items-center justify-between px-2">
-                           <h4 className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.3em]">Telemetry Metrics</h4>
-                           <span className="text-[8px] text-slate-700 font-bold uppercase tracking-wider">{(selectedProduct.field_mapping.tables[selectedTableIdx].metrics || []).length} Filters Engaged</span>
+                           <h4 className="text-[10px] font-black text-indigo-500 tracking-[0.3em]">Telemetry Metrics</h4>
+                           <span className="text-[8px] text-slate-700 font-bold tracking-wider">{(selectedProduct.field_mapping.tables[selectedTableIdx].metrics || []).length} Filters Engaged</span>
                         </div>
                         
                         <div className="grid grid-cols-1 gap-3">
@@ -557,7 +536,7 @@ export function ProductEditView({ selectedProduct, setSelectedProduct, selectedT
                                     <div className="flex-1 space-y-3">
                                        <div className="grid grid-cols-2 gap-4">
                                           <div className="space-y-1.5">
-                                             <label className="text-[8px] font-bold text-slate-700 uppercase tracking-widest ml-4">Label</label>
+                                             <label className="text-[8px] font-bold text-slate-700 tracking-widest ml-4">Label</label>
                                              <input value={m.label} onChange={e => {
                                                 const newT = [...selectedProduct.field_mapping.tables];
                                                 newT[selectedTableIdx].metrics[mIdx].label = e.target.value;
@@ -565,7 +544,7 @@ export function ProductEditView({ selectedProduct, setSelectedProduct, selectedT
                                              }} className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3 text-[11px] font-bold outline-none text-white focus:border-indigo-500/30" />
                                           </div>
                                           <div className="space-y-1.5">
-                                             <label className="text-[8px] font-bold text-slate-700 uppercase tracking-widest ml-4">SQL Filter (WHERE)</label>
+                                             <label className="text-[8px] font-bold text-slate-700 tracking-widest ml-4">SQL Filter (WHERE)</label>
                                              <input value={m.where} onChange={e => {
                                                 const newT = [...selectedProduct.field_mapping.tables];
                                                 newT[selectedTableIdx].metrics[mIdx].where = e.target.value;
@@ -590,7 +569,7 @@ export function ProductEditView({ selectedProduct, setSelectedProduct, selectedT
                            {(selectedProduct.field_mapping.tables[selectedTableIdx].metrics || []).length === 0 && (
                               <div className="py-16 text-center border-2 border-dashed border-white/5 rounded-3xl bg-white/[0.01]">
                                  <BsBoxes size={32} className="mx-auto mb-4 opacity-5 text-indigo-500" />
-                                 <p className="text-[9px] font-black uppercase tracking-[0.5em] text-slate-800">No Analytics Defined</p>
+                                 <p className="text-[9px] font-black tracking-[0.5em] text-slate-800">No Analytics Defined</p>
                               </div>
                            )}
                         </div>
@@ -607,8 +586,8 @@ export function ProductEditView({ selectedProduct, setSelectedProduct, selectedT
                         </div>
                      </div>
                      <div className="space-y-1">
-                        <h2 className="text-3xl font-black tracking-tight text-white uppercase italic">Product Configuration</h2>
-                        <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-slate-600">Global Schema Mapping Control</p>
+                        <h2 className="text-3xl font-black tracking-tight text-white italic">Product Configuration</h2>
+                        <p className="text-[10px] font-bold tracking-[0.5em] text-slate-600">Global Schema Mapping Control</p>
                      </div>
                   </div>
 
@@ -621,12 +600,12 @@ export function ProductEditView({ selectedProduct, setSelectedProduct, selectedT
                               <div className="w-8 h-8 rounded-xl bg-indigo-600/20 flex items-center justify-center text-indigo-400 border border-indigo-500/20">
                                  <BsDatabase size={16} />
                               </div>
-                              <h4 className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.4em]">License Proxy Schema</h4>
+                              <h4 className="text-[10px] font-black text-indigo-500 tracking-[0.4em]">License Proxy Schema</h4>
                            </div>
                            
                            <div className="space-y-6">
                               <div className="space-y-2">
-                                 <label className="text-[9px] font-bold text-slate-500 uppercase tracking-widest px-2">Primary License Database (Override)</label>
+                                 <label className="text-[9px] font-bold text-slate-500 tracking-widest px-2">Primary License Database (Override)</label>
                                  <input 
                                     value={selectedProduct.field_mapping?.licence_db || ''} 
                                     onChange={e => {
@@ -644,7 +623,7 @@ export function ProductEditView({ selectedProduct, setSelectedProduct, selectedT
                                     { label: 'Payment History Table', key: 'licence_payments_table', def: 'bill_payments' }
                                  ].map((field, idx) => (
                                     <div key={idx} className={`space-y-2 ${idx === 2 ? 'md:col-span-2' : ''}`}>
-                                       <label className="text-[9px] font-bold text-slate-600 uppercase tracking-widest px-2">{field.label}</label>
+                                       <label className="text-[9px] font-bold text-slate-600 tracking-widest px-2">{field.label}</label>
                                        <input 
                                           value={selectedProduct.field_mapping?.[field.key] || field.def} 
                                           onChange={e => {
@@ -661,7 +640,7 @@ export function ProductEditView({ selectedProduct, setSelectedProduct, selectedT
                      </div>
 
                      <div className="text-center p-8 border border-dashed border-white/5 rounded-3xl bg-white/[0.01]">
-                        <p className="text-[9px] text-slate-800 uppercase tracking-[0.4em] font-black">Select a table from the sidebar to configure granular telemetry</p>
+                        <p className="text-[9px] text-slate-800 tracking-[0.4em] font-black">Select a table from the sidebar to configure granular telemetry</p>
                      </div>
                   </div>
                </div>

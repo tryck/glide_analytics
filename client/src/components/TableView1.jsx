@@ -7,7 +7,7 @@ export default function TableView1() {
          <div className="flex justify-between items-center">
             <div>
                <h1 className="text-2xl font-semibold text-[var(--color-text-strong)]">Posts & Articles</h1>
-               <p className="text-[11px] text-[var(--color-text-muted)] mt-1 uppercase tracking-wider font-semibold">Content Hub Infrastructure</p>
+               <p className="text-[11px] text-[var(--color-text-muted)] mt-1 tracking-wider font-semibold">Content Hub Infrastructure</p>
             </div>
             <button className="bg-[var(--color-accent)] hover:opacity-90 text-[var(--color-text-strong)] px-5 py-2.5 rounded-md text-xs font-bold transition-all flex items-center gap-2 border border-transparent hover:border-[var(--color-border-glow)]">
                <Plus size={16} /> New Post
@@ -25,9 +25,9 @@ export default function TableView1() {
                         <div>
                            <h3 className="text-[13px] font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-all cursor-pointer">Modern Architecture Patterns in Scalable Microservices</h3>
                            <div className="flex items-center gap-3 mt-1.5">
-                              <span className="text-[10px] text-[var(--color-text-muted)] font-semibold uppercase tracking-wider">Mark Ashton</span>
+                              <span className="text-[10px] text-[var(--color-text-muted)] font-semibold tracking-wider">Mark Ashton</span>
                               <div className="w-1 h-1 rounded-full bg-[var(--color-border)]" />
-                              <span className="text-[10px] text-[var(--color-text-muted)] font-semibold uppercase tracking-wider">Dev</span>
+                              <span className="text-[10px] text-[var(--color-text-muted)] font-semibold tracking-wider">Dev</span>
                               <div className="w-1 h-1 rounded-full bg-[var(--color-border)]" />
                               <span className="text-[10px] text-[var(--color-text-secondary)] font-medium leading-none">Oct 24, 2025</span>
                            </div>

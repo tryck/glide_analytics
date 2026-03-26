@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { Globe, Activity, AlertCircle, ChevronRight, ShieldCheck, Zap, Server, TrendingUp } from 'lucide-react';
+import { Globe, Activity, AlertCircle, ChevronRight, ShieldCheck, Zap, Server, TrendingUp, Search } from 'lucide-react';
 
 const shimmer = keyframes`
   0% { background-position: -200% 0; }
@@ -75,7 +75,7 @@ const CustomLineChart = ({ data, categories }) => {
 
          {/* X Axis Labels */}
          {categories.map((cat, i) => (
-            <text key={i} x={getX(i)} y={height - 10} fontSize="10" fill="var(--color-text-muted)" textAnchor="middle" className="font-bold uppercase tracking-widest">
+            <text key={i} x={getX(i)} y={height - 10} fontSize="10" fill="var(--color-text-muted)" textAnchor="middle" className="font-bold tracking-widest">
                {cat}
             </text>
          ))}
@@ -130,7 +130,7 @@ const CustomDonutChart = ({ data }) => {
          </svg>
          <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-2xl font-black text-white">{total}</span>
-            <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Nodes</span>
+            <span className="text-[8px] font-bold text-slate-500 tracking-widest">Nodes</span>
          </div>
       </div>
    );
@@ -138,6 +138,7 @@ const CustomDonutChart = ({ data }) => {
 
 export default function Dashboard({ bridges, products, loading: parentLoading }) {
    const [loading, setLoading] = useState(true);
+   const [searchQuery, setSearchQuery] = useState('');
    
    useEffect(() => {
       const timer = setTimeout(() => setLoading(false), 800);
@@ -148,6 +149,11 @@ export default function Dashboard({ bridges, products, loading: parentLoading })
    const productsList = Array.isArray(products) ? products : [];
    const activeBridges = bridgesList.filter(b => b.status === 'Online');
    const offlineBridges = bridgesList.filter(b => b.status === 'Offline');
+
+   const filteredBridges = bridgesList.filter(b => 
+      b.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (b.stats?.license || '').toLowerCase().includes(searchQuery.toLowerCase())
+   );
 
    const stats = [
       { label: 'Global Traffic', value: bridgesList.reduce((a, b) => a + (b.stats?.customers || 0), 0), icon: Globe, color: '#8b5cf6' },
@@ -221,7 +227,7 @@ export default function Dashboard({ bridges, products, loading: parentLoading })
                         <div className="w-10 h-10 bg-[var(--color-panel-strong)] flex items-center justify-center border border-[var(--color-border)]" style={{ color: s.color, borderRadius: 'var(--radius-md)' }}>
                            <Icon size={20} />
                         </div>
-                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-text-muted)]">{s.label}</h3>
+                        <h3 className="text-[10px] font-black tracking-[0.2em] text-[var(--color-text-muted)]">{s.label}</h3>
                      </div>
                      <div className="flex items-baseline justify-between relative z-10">
                         <div className="text-3xl font-black text-[var(--color-text-strong)] tracking-tight tabular-nums">{s.value.toLocaleString()}</div>
@@ -244,13 +250,13 @@ export default function Dashboard({ bridges, products, loading: parentLoading })
                    <div className="flex items-center gap-6">
                       <div className="flex items-center gap-2">
                          <div className="w-3 h-3 rounded-full bg-indigo-500" />
-                         <span className="text-[10px] font-black uppercase tracking-widest text-[var(--color-text-muted)]">Bills</span>
+                         <span className="text-[10px] font-black tracking-widest text-[var(--color-text-muted)]">Bills</span>
                       </div>
                       <div className="flex items-center gap-2">
                          <div className="w-3 h-3 rounded-full bg-emerald-500" />
-                         <span className="text-[10px] font-black uppercase tracking-widest text-[var(--color-text-muted)]">Payments</span>
+                         <span className="text-[10px] font-black tracking-widest text-[var(--color-text-muted)]">Payments</span>
                       </div>
-                      <div className="flex items-center gap-2 text-indigo-400 text-[10px] font-black uppercase tracking-widest pl-4 border-l border-[var(--color-border)]">
+                      <div className="flex items-center gap-2 text-indigo-400 text-[10px] font-black tracking-widest pl-4 border-l border-[var(--color-border)]">
                          <TrendingUp size={14} /> +12.4% MoM
                       </div>
                    </div>
@@ -272,7 +278,7 @@ export default function Dashboard({ bridges, products, loading: parentLoading })
                         <div key={d.name} className="flex items-center justify-between">
                            <div className="flex items-center gap-2">
                               <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: d.color }} />
-                              <span className="text-[9px] font-bold text-slate-500 uppercase truncate max-w-[80px]">{d.name}</span>
+                              <span className="text-[9px] font-bold text-slate-500 truncate max-w-[80px]">{d.name}</span>
                            </div>
                            <span className="text-[10px] font-black text-white italic">{d.value}</span>
                         </div>
@@ -285,14 +291,27 @@ export default function Dashboard({ bridges, products, loading: parentLoading })
          <div className="card-surface p-0 overflow-hidden" style={{ borderRadius: 'var(--radius-sm)' }}>
             <div className="p-8 border-b border-[var(--color-border)] flex justify-between items-center bg-[var(--color-panel-soft)]">
                <div>
-                  <h3 className="text-lg font-black text-[var(--color-text-strong)] uppercase tracking-tight">Active Node Registry</h3>
-                  <p className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-[0.2em] mt-1">Real-time infrastructure health and telemetry</p>
+                  <h3 className="text-lg font-black text-[var(--color-text-strong)] tracking-tight">Active Node Registry</h3>
+                  <p className="text-[10px] text-[var(--color-text-muted)] font-bold tracking-[0.2em] mt-1">Real-time infrastructure health and telemetry</p>
                </div>
-               <button className="text-[10px] font-black uppercase tracking-widest text-indigo-400 bg-indigo-500/5 px-6 py-3 border border-indigo-500/20 hover:bg-indigo-600 hover:text-white transition-all" style={{ borderRadius: 'var(--radius-md)' }}>Consolidate Report</button>
+               <div className="flex gap-4 items-center">
+                  <div className="relative group">
+                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-400 transition-colors" size={14} />
+                     <input 
+                        type="text" 
+                        placeholder="Search nodes..." 
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="bg-black/20 border border-white/5 py-3.5 pl-12 pr-6 text-[10px] font-bold tracking-widest outline-none focus:border-indigo-500/50 transition-all w-72"
+                        style={{ borderRadius: 'var(--radius-sm)' }}
+                     />
+                  </div>
+                  <button className="text-[10px] font-black tracking-widest text-indigo-400 bg-indigo-500/5 px-8 py-4 border border-indigo-500/20 hover:bg-indigo-600 hover:text-white transition-all" style={{ borderRadius: 'var(--radius-sm)' }}>Consolidate Report</button>
+               </div>
             </div>
             
             <div className="divide-y divide-[var(--color-border)]">
-               {bridgesList.map(b => (
+               {filteredBridges.map(b => (
                   <div key={b.id} className="flex items-center justify-between p-6 hover:bg-[var(--color-panel-soft)] transition-all group cursor-pointer">
                      <div className="flex items-center gap-6">
                         <div className="relative">
@@ -300,11 +319,11 @@ export default function Dashboard({ bridges, products, loading: parentLoading })
                            {b.status === 'Online' && <div className="absolute inset-0 bg-emerald-500 blur-[6px] animate-pulse rounded-full opacity-50" />}
                         </div>
                         <div>
-                           <div className="text-[14px] font-black text-white group-hover:text-indigo-400 transition-colors uppercase tracking-tight">{b.name}</div>
+                           <div className="text-[14px] font-black text-white group-hover:text-indigo-400 transition-colors tracking-tight">{b.name}</div>
                            <div className="flex items-center gap-3 mt-1">
-                              <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{b.stats?.license || 'Standard Edition'}</span>
+                              <span className="text-[9px] font-bold text-slate-500 tracking-widest">{b.stats?.license || 'Standard Edition'}</span>
                               <span className="text-slate-700">•</span>
-                              <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">v2.4.1-rc</span>
+                              <span className="text-[9px] font-bold text-slate-600 tracking-widest">v2.4.1-rc</span>
                            </div>
                         </div>
                      </div>
@@ -312,7 +331,7 @@ export default function Dashboard({ bridges, products, loading: parentLoading })
                         {Object.entries(b.stats || {}).map(([label, val]) => (
                            label !== 'license' && (
                               <div key={label} className="min-w-[80px]">
-                                 <div className="text-[9px] text-[var(--color-text-muted)] font-black uppercase tracking-[0.2em] mb-1">{label}</div>
+                                 <div className="text-[9px] text-[var(--color-text-muted)] font-black tracking-[0.2em] mb-1">{label}</div>
                                  <div className="text-[15px] font-black text-white tabular-nums tracking-tighter italic">{val.toLocaleString()}</div>
                               </div>
                            )
@@ -323,10 +342,16 @@ export default function Dashboard({ bridges, products, loading: parentLoading })
                      </div>
                   </div>
                ))}
+               {filteredBridges.length === 0 && bridgesList.length > 0 && (
+                  <div className="py-24 text-center border-t border-[var(--color-border)]">
+                     <Search size={48} className="mx-auto mb-6 text-slate-800" />
+                     <p className="text-[11px] font-black tracking-[0.6em] text-slate-700">No nodes matching "{searchQuery}"</p>
+                  </div>
+               )}
                {bridgesList.length === 0 && (
                   <div className="py-24 text-center border-t border-[var(--color-border)]">
                      <Zap size={48} className="mx-auto mb-6 text-slate-800" />
-                     <p className="text-[11px] font-black uppercase tracking-[0.6em] text-slate-700">No nodes detected in global network</p>
+                     <p className="text-[11px] font-black tracking-[0.6em] text-slate-700">No nodes detected in global network</p>
                   </div>
                )}
             </div>

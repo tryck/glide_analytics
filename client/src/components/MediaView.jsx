@@ -7,7 +7,7 @@ export default function MediaView() {
          <div className="flex justify-between items-center">
             <div>
                <h1 className="text-2xl font-bold text-white">Media Library</h1>
-               <p className="text-[11px] text-[#a0a0a5] mt-1 uppercase tracking-wider font-semibold">Asset Infrastructure</p>
+               <p className="text-[11px] text-[#a0a0a5] mt-1 tracking-wider font-semibold">Asset Infrastructure</p>
             </div>
             <div className="flex gap-4">
                <div className="relative group">
@@ -24,7 +24,7 @@ export default function MediaView() {
                   <div key={i} className="group relative aspect-square bg-[#1a1a1c] border border-[var(--color-border)] rounded-lg overflow-hidden cursor-pointer hover:border-[#3a3a3c] transition-all shadow-sm">
                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-4 flex flex-col justify-end">
                         <p className="text-[10px] font-bold text-white truncate">asset_banner_{i}.png</p>
-                        <p className="text-[8px] text-[#a0a0a5] mt-0.5 uppercase tracking-widest">1.2 MB • PNG</p>
+                        <p className="text-[8px] text-[#a0a0a5] mt-0.5 tracking-widest">1.2 MB • PNG</p>
                      </div>
                      <div className="w-full h-full flex items-center justify-center text-[#2a2a2c] group-hover:text-[#7c3aed] transition-colors">
                         <ImageIcon size={48} strokeWidth={1} />

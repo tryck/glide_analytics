@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { BsSearch, BsFilter, BsPlus, BsEye, BsPencil, BsTrash, BsCheck } from 'react-icons/bs';
 import AdminLayout from './AdminLayout';
 import api from '../services/api';
+import DataTable, { Badge as SharedBadge, ActionBtn } from './DataTable';
 
 const PageHeader = styled.div`
   margin-bottom: 2rem;
@@ -61,12 +62,12 @@ const SearchBox = styled.div`
     background: var(--color-input-bg);
     border: 1px solid var(--color-input-border);
     color: var(--color-input-text);
-    padding: 0.5rem 1rem 0.5rem 2.2rem;
-    border-radius: 8px;
+    padding: 0.85rem 1.5rem 0.85rem 3rem;
+    border-radius: var(--radius-sm);
     font-size: 0.85rem;
     outline: none;
-    width: 220px;
-    transition: border-color 0.2s;
+    width: 280px;
+    transition: all 0.2s;
 
     ::placeholder {
       color: var(--color-input-placeholder);
@@ -82,8 +83,8 @@ const FilterBtn = styled.button`
   background: var(--color-input-bg);
   border: 1px solid var(--color-input-border);
   color: var(--color-input-text);
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
+  padding: 0.85rem 1.5rem;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -99,13 +100,13 @@ const AddBtn = styled.button`
   background: linear-gradient(135deg, #8b5cf6, #5b45c2);
   border: none;
   color: var(--color-text-strong);
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
+  padding: 0.85rem 1.75rem;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   gap: 0.4rem;
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: 700;
   cursor: pointer;
 
   &:hover {
@@ -117,37 +118,6 @@ const AddBtn = styled.button`
   }
 `;
 
-const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  
-  th, td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid var(--color-table-divider);
-  }
-  
-  th {
-    color: var(--color-table-head);
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding-bottom: 1.2rem;
-  }
-
-  tbody tr {
-    transition: background-color 0.2s;
-    
-    &:hover {
-      background-color: var(--color-table-row-hover);
-    }
-    
-    &:last-child td {
-      border-bottom: none;
-    }
-  }
-`;
 
 const CheckboxBase = styled.div`
   width: 18px;
@@ -223,31 +193,6 @@ const AuthorCol = styled.div`
   }
 `;
 
-const Badge = styled.span`
-  display: inline-flex;
-  padding: 0.25rem 0.6rem;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  
-  background-color: ${props => {
-    switch (props.type) {
-      case 'Dev': return 'rgba(59, 130, 246, 0.15)';
-      case 'Design': return 'rgba(139, 92, 246, 0.15)';
-      case 'System': return 'rgba(16, 185, 129, 0.15)';
-      default: return 'var(--color-border)';
-    }
-  }};
-  
-  color: ${props => {
-    switch (props.type) {
-      case 'Dev': return '#60a5fa';
-      case 'Design': return '#a78bfa';
-      case 'System': return '#34d399';
-      default: return 'var(--color-text-muted)';
-    }
-  }};
-`;
 
 const StatusBadge = styled.div`
   display: inline-flex;
@@ -292,25 +237,6 @@ const StatusBadge = styled.div`
   }
 `;
 
-const ActionIcons = styled.div`
-  display: flex;
-  gap: 0.8rem;
-  
-  svg {
-    color: var(--color-text-muted);
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: color 0.2s;
-    
-    &:hover {
-      color: var(--color-text-primary);
-    }
-    
-    &.delete:hover {
-      color: #ef4444;
-    }
-  }
-`;
 
 const PaginationRow = styled.div`
   display: flex;
@@ -455,6 +381,13 @@ const AdminPosts = () => {
   const [selected, setSelected] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ title: '', excerpt: '', category: 'Dev', status: 'Draft' });
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredPosts = posts.filter(p => 
+     p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+     p.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
+     p.category.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   useEffect(() => {
     fetchPosts();
@@ -480,8 +413,8 @@ const AdminPosts = () => {
   };
 
   const toggleAll = () => {
-    if (selected.length === posts.length) setSelected([]);
-    else setSelected(posts.map(p => p.id));
+    if (selected.length === filteredPosts.length) setSelected([]);
+    else setSelected(filteredPosts.map(p => p.id));
   };
 
   const toggleOne = (id) => {
@@ -519,85 +452,103 @@ const AdminPosts = () => {
     }
   };
 
+  const getCategoryColor = (type) => {
+    switch (type) {
+      case 'Dev': return '#3b82f6';
+      case 'Design': return '#8b5cf6';
+      case 'System': return '#10b981';
+      default: return '#64748b';
+    }
+  };
+
   return (
     <AdminLayout>
       <PageHeader>
-        <h1>Posts22</h1>
+        <h1>Posts</h1>
         <p>Manage your blog content and articles</p>
       </PageHeader>
 
-      <Container>
+      <div className="space-y-8">
         <TableHeaderLine>
-          <h2>Post Management</h2>
+          <div className="flex flex-col">
+            <h2 className="text-2xl font-black text-[var(--color-text-strong)] tracking-tight">Editorial Pipeline</h2>
+            <p className="text-[10px] text-[var(--color-text-muted)] font-bold tracking-[0.2em] mt-1">Manage global content orchestration and assets</p>
+          </div>
           <ActionsContainer>
             <SearchBox>
               <BsSearch />
-              <input type="text" placeholder="Search posts..." />
+              <input 
+                 type="text" 
+                 placeholder="Search posts..." 
+                 value={searchQuery}
+                 onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </SearchBox>
             <FilterBtn>
-              <BsFilter /> Filter
+               <BsFilter /> Filter Items
             </FilterBtn>
             <AddBtn onClick={() => setShowModal(true)}>
-              <BsPlus /> Add New Post
+               <BsPlus /> Create Entry
             </AddBtn>
           </ActionsContainer>
         </TableHeaderLine>
 
-        <Table>
-          <thead>
-            <tr>
-              <th style={{ width: '40px' }}>
-                <CustomCheckbox checked={selected.length === posts.length && posts.length > 0} onChange={toggleAll} />
-              </th>
-              <th>Post</th>
-              <th>Author</th>
-              <th>Category</th>
-              <th>Date</th>
-              <th>Status</th>
-              <th>Actions</th>
+        <Container>
+
+        <DataTable 
+          headers={[
+            { label: '', style: { width: '40px' } },
+            { label: 'Post' },
+            { label: 'Author' },
+            { label: 'Category' },
+            { label: 'Date' },
+            { label: 'Status' },
+            { label: 'Actions' }
+          ]}
+          isEmpty={filteredPosts.length === 0}
+          emptyMessage={`No articles found matching "${searchQuery}"`}
+        >
+          {filteredPosts.map(post => (
+            <tr key={post.id}>
+              <td>
+                <CustomCheckbox checked={selected.includes(post.id)} onChange={() => toggleOne(post.id)} />
+              </td>
+              <td>
+                <PostTitleCol>
+                  <img src={post.img} alt="" className="thumb" />
+                  <div className="info">
+                    <div className="title">{post.title}</div>
+                    <div className="excerpt">{post.excerpt}</div>
+                  </div>
+                </PostTitleCol>
+              </td>
+              <td>
+                <AuthorCol>
+                  <div className="avatar">{post.author.charAt(0)}</div>
+                  <span>{post.author}</span>
+                </AuthorCol>
+              </td>
+              <td>
+                <SharedBadge color={getCategoryColor(post.category)}>{post.category}</SharedBadge>
+              </td>
+              <td>
+                <span style={{ fontSize: '0.85rem', color: '#d0d0d5' }}>{post.date}</span>
+              </td>
+              <td>
+                <StatusBadge status={post.status}>{post.status}</StatusBadge>
+              </td>
+              <td>
+                <div className="flex gap-2">
+                  <ActionBtn><BsEye size={16} /></ActionBtn>
+                  <ActionBtn><BsPencil size={16} /></ActionBtn>
+                  <ActionBtn onClick={() => handleDeletePost(post.id)} className="hover:!text-rose-500">
+                    <BsTrash size={16} />
+                  </ActionBtn>
+                </div>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {posts.map(post => (
-              <tr key={post.id}>
-                <td>
-                  <CustomCheckbox checked={selected.includes(post.id)} onChange={() => toggleOne(post.id)} />
-                </td>
-                <td>
-                  <PostTitleCol>
-                    <img src={post.img} alt="" className="thumb" />
-                    <div className="info">
-                      <div className="title">{post.title}</div>
-                      <div className="excerpt">{post.excerpt}</div>
-                    </div>
-                  </PostTitleCol>
-                </td>
-                <td>
-                  <AuthorCol>
-                    <div className="avatar">{post.author.charAt(0)}</div>
-                    <span>{post.author}</span>
-                  </AuthorCol>
-                </td>
-                <td>
-                  <Badge type={post.category}>{post.category}</Badge>
-                </td>
-                <td>
-                  <span style={{ fontSize: '0.85rem', color: '#d0d0d5' }}>{post.date}</span>
-                </td>
-                <td>
-                  <StatusBadge status={post.status}>{post.status}</StatusBadge>
-                </td>
-                <td>
-                  <ActionIcons>
-                    <BsEye />
-                    <BsPencil />
-                    <BsTrash className="delete" onClick={() => handleDeletePost(post.id)} />
-                  </ActionIcons>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+          ))}
+        </DataTable>
 
         <PaginationRow>
           <div className="info">Showing 1 to 5 of 42 entries</div>
@@ -648,6 +599,7 @@ const AdminPosts = () => {
           </form>
         </ModalContent>
       </ModalOverlay>
+      </div>
     </AdminLayout>
   );
 };
